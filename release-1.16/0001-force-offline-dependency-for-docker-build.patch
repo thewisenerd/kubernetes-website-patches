@@ -1,0 +1,25 @@
+From 9f010d18a0a3c4a1e385fec17e8324ce54606587 Mon Sep 17 00:00:00 2001
+From: thewisenerd <thewisenerd@protonmail.com>
+Date: Wed, 11 Oct 2023 01:26:53 +0000
+Subject: [PATCH] force offline dependency for docker build
+
+---
+ layouts/shortcodes/upcoming-events.html | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/layouts/shortcodes/upcoming-events.html b/layouts/shortcodes/upcoming-events.html
+index d6bbaa8c2a..6d16a40281 100644
+--- a/layouts/shortcodes/upcoming-events.html
++++ b/layouts/shortcodes/upcoming-events.html
+@@ -2,7 +2,7 @@
+ 
+ 
+ {{/* Setting external resource based on whether hugo is running locally or public */}}
+-{{ if .Site.IsServer }}
++{{ if or .Site.IsServer true }}
+ {{ $jurl := printf "" $date }}
+ {{ else }}
+ {{ $jurl := printf "https://www.googleapis.com/calendar/v3/calendars/nt2tcnbtbied3l6gi2h29slvc0%%40group.calendar.google.com/events?orderBy=startTime&singleEvents=true&%s&key=AIzaSyAST-sCyPJzMQJSl6_vRPW9r4DNLPaDIyM" $date }}
+-- 
+2.34.1
+

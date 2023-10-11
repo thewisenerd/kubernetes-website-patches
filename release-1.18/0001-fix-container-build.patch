@@ -1,0 +1,33 @@
+From 4a89b215d1bad1366d4d3a37d07633f0831bf477 Mon Sep 17 00:00:00 2001
+From: thewisenerd <thewisenerd@protonmail.com>
+Date: Wed, 11 Oct 2023 02:54:58 +0000
+Subject: [PATCH] fix container build
+
+---
+ Dockerfile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Dockerfile b/Dockerfile
+index 3e3335076c..13d9714830 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -15,8 +15,7 @@ RUN apk add --no-cache \
+     rsync \
+     build-base \
+     libc6-compat \
+-    npm && \
+-    npm install -G autoprefixer postcss-cli
++    npm
+ 
+ ARG HUGO_VERSION
+ 
+@@ -28,5 +27,6 @@ RUN mkdir -p /usr/local/src && \
+     adduser -Sg hugo -u 1000 -h /src hugo
+ 
+ WORKDIR /src
++RUN npm install -G autoprefixer postcss-cli
+ 
+ EXPOSE 1313
+-- 
+2.34.1
+

@@ -1,0 +1,3076 @@
+From cd8ed4fd77f77fa1fbea0724e469e45c69170dd7 Mon Sep 17 00:00:00 2001
+From: thewisenerd <thewisenerd@protonmail.com>
+Date: Wed, 11 Oct 2023 16:27:45 +0000
+Subject: [PATCH] local build changes
+
+---
+ Dockerfile        |    2 +-
+ LICENSE           |  596 +++++++-------------
+ Makefile          |    2 +-
+ README.md         |  275 ++++++----
+ package-lock.json | 1313 ++++++++++++++++++++++++++++++++++++++++++++-
+ yarn.lock         |  789 +++++++++++++++++++++++++++
+ 6 files changed, 2467 insertions(+), 510 deletions(-)
+ create mode 100644 yarn.lock
+
+diff --git a/Dockerfile b/Dockerfile
+index e168c3e6dc..5e487c07a5 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -16,7 +16,7 @@ RUN apk add --no-cache \
+     build-base \
+     libc6-compat \
+     npm && \
+-    npm install -D autoprefixer postcss-cli
++    npm install -g autoprefixer postcss-cli
+ 
+ ARG HUGO_VERSION
+ 
+diff --git a/LICENSE b/LICENSE
+index b6988e7edc..261eeb9e9f 100644
+--- a/LICENSE
++++ b/LICENSE
+@@ -1,395 +1,201 @@
+-Attribution 4.0 International
+-
+-=======================================================================
+-
+-Creative Commons Corporation ("Creative Commons") is not a law firm and
+-does not provide legal services or legal advice. Distribution of
+-Creative Commons public licenses does not create a lawyer-client or
+-other relationship. Creative Commons makes its licenses and related
+-information available on an "as-is" basis. Creative Commons gives no
+-warranties regarding its licenses, any material licensed under their
+-terms and conditions, or any related information. Creative Commons
+-disclaims all liability for damages resulting from their use to the
+-fullest extent possible.
+-
+-Using Creative Commons Public Licenses
+-
+-Creative Commons public licenses provide a standard set of terms and
+-conditions that creators and other rights holders may use to share
+-original works of authorship and other material subject to copyright
+-and certain other rights specified in the public license below. The
+-following considerations are for informational purposes only, are not
+-exhaustive, and do not form part of our licenses.
+-
+-     Considerations for licensors: Our public licenses are
+-     intended for use by those authorized to give the public
+-     permission to use material in ways otherwise restricted by
+-     copyright and certain other rights. Our licenses are
+-     irrevocable. Licensors should read and understand the terms
+-     and conditions of the license they choose before applying it.
+-     Licensors should also secure all rights necessary before
+-     applying our licenses so that the public can reuse the
+-     material as expected. Licensors should clearly mark any
+-     material not subject to the license. This includes other CC-
+-     licensed material, or material used under an exception or
+-     limitation to copyright. More considerations for licensors:
+-	wiki.creativecommons.org/Considerations_for_licensors
+-
+-     Considerations for the public: By using one of our public
+-     licenses, a licensor grants the public permission to use the
+-     licensed material under specified terms and conditions. If
+-     the licensor's permission is not necessary for any reason--for
+-     example, because of any applicable exception or limitation to
+-     copyright--then that use is not regulated by the license. Our
+-     licenses grant only permissions under copyright and certain
+-     other rights that a licensor has authority to grant. Use of
+-     the licensed material may still be restricted for other
+-     reasons, including because others have copyright or other
+-     rights in the material. A licensor may make special requests,
+-     such as asking that all changes be marked or described.
+-     Although not required by our licenses, you are encouraged to
+-     respect those requests where reasonable. More_considerations
+-     for the public: 
+-	wiki.creativecommons.org/Considerations_for_licensees
+-
+-=======================================================================
+-
+-Creative Commons Attribution 4.0 International Public License
+-
+-By exercising the Licensed Rights (defined below), You accept and agree
+-to be bound by the terms and conditions of this Creative Commons
+-Attribution 4.0 International Public License ("Public License"). To the
+-extent this Public License may be interpreted as a contract, You are
+-granted the Licensed Rights in consideration of Your acceptance of
+-these terms and conditions, and the Licensor grants You such rights in
+-consideration of benefits the Licensor receives from making the
+-Licensed Material available under these terms and conditions.
+-
+-
+-Section 1 -- Definitions.
+-
+-  a. Adapted Material means material subject to Copyright and Similar
+-     Rights that is derived from or based upon the Licensed Material
+-     and in which the Licensed Material is translated, altered,
+-     arranged, transformed, or otherwise modified in a manner requiring
+-     permission under the Copyright and Similar Rights held by the
+-     Licensor. For purposes of this Public License, where the Licensed
+-     Material is a musical work, performance, or sound recording,
+-     Adapted Material is always produced where the Licensed Material is
+-     synched in timed relation with a moving image.
+-
+-  b. Adapter's License means the license You apply to Your Copyright
+-     and Similar Rights in Your contributions to Adapted Material in
+-     accordance with the terms and conditions of this Public License.
+-
+-  c. Copyright and Similar Rights means copyright and/or similar rights
+-     closely related to copyright including, without limitation,
+-     performance, broadcast, sound recording, and Sui Generis Database
+-     Rights, without regard to how the rights are labeled or
+-     categorized. For purposes of this Public License, the rights
+-     specified in Section 2(b)(1)-(2) are not Copyright and Similar
+-     Rights.
+-
+-  d. Effective Technological Measures means those measures that, in the
+-     absence of proper authority, may not be circumvented under laws
+-     fulfilling obligations under Article 11 of the WIPO Copyright
+-     Treaty adopted on December 20, 1996, and/or similar international
+-     agreements.
+-
+-  e. Exceptions and Limitations means fair use, fair dealing, and/or
+-     any other exception or limitation to Copyright and Similar Rights
+-     that applies to Your use of the Licensed Material.
+-
+-  f. Licensed Material means the artistic or literary work, database,
+-     or other material to which the Licensor applied this Public
+-     License.
+-
+-  g. Licensed Rights means the rights granted to You subject to the
+-     terms and conditions of this Public License, which are limited to
+-     all Copyright and Similar Rights that apply to Your use of the
+-     Licensed Material and that the Licensor has authority to license.
+-
+-  h. Licensor means the individual(s) or entity(ies) granting rights
+-     under this Public License.
+-
+-  i. Share means to provide material to the public by any means or
+-     process that requires permission under the Licensed Rights, such
+-     as reproduction, public display, public performance, distribution,
+-     dissemination, communication, or importation, and to make material
+-     available to the public including in ways that members of the
+-     public may access the material from a place and at a time
+-     individually chosen by them.
+-
+-  j. Sui Generis Database Rights means rights other than copyright
+-     resulting from Directive 96/9/EC of the European Parliament and of
+-     the Council of 11 March 1996 on the legal protection of databases,
+-     as amended and/or succeeded, as well as other essentially
+-     equivalent rights anywhere in the world.
+-
+-  k. You means the individual or entity exercising the Licensed Rights
+-     under this Public License. Your has a corresponding meaning.
+-
+-
+-Section 2 -- Scope.
+-
+-  a. License grant.
+-
+-       1. Subject to the terms and conditions of this Public License,
+-          the Licensor hereby grants You a worldwide, royalty-free,
+-          non-sublicensable, non-exclusive, irrevocable license to
+-          exercise the Licensed Rights in the Licensed Material to:
+-
+-            a. reproduce and Share the Licensed Material, in whole or
+-               in part; and
+-
+-            b. produce, reproduce, and Share Adapted Material.
+-
+-       2. Exceptions and Limitations. For the avoidance of doubt, where
+-          Exceptions and Limitations apply to Your use, this Public
+-          License does not apply, and You do not need to comply with
+-          its terms and conditions.
+-
+-       3. Term. The term of this Public License is specified in Section
+-          6(a).
+-
+-       4. Media and formats; technical modifications allowed. The
+-          Licensor authorizes You to exercise the Licensed Rights in
+-          all media and formats whether now known or hereafter created,
+-          and to make technical modifications necessary to do so. The
+-          Licensor waives and/or agrees not to assert any right or
+-          authority to forbid You from making technical modifications
+-          necessary to exercise the Licensed Rights, including
+-          technical modifications necessary to circumvent Effective
+-          Technological Measures. For purposes of this Public License,
+-          simply making modifications authorized by this Section 2(a)
+-          (4) never produces Adapted Material.
+-
+-       5. Downstream recipients.
+-
+-            a. Offer from the Licensor -- Licensed Material. Every
+-               recipient of the Licensed Material automatically
+-               receives an offer from the Licensor to exercise the
+-               Licensed Rights under the terms and conditions of this
+-               Public License.
+-
+-            b. No downstream restrictions. You may not offer or impose
+-               any additional or different terms or conditions on, or
+-               apply any Effective Technological Measures to, the
+-               Licensed Material if doing so restricts exercise of the
+-               Licensed Rights by any recipient of the Licensed
+-               Material.
+-
+-       6. No endorsement. Nothing in this Public License constitutes or
+-          may be construed as permission to assert or imply that You
+-          are, or that Your use of the Licensed Material is, connected
+-          with, or sponsored, endorsed, or granted official status by,
+-          the Licensor or others designated to receive attribution as
+-          provided in Section 3(a)(1)(A)(i).
+-
+-  b. Other rights.
+-
+-       1. Moral rights, such as the right of integrity, are not
+-          licensed under this Public License, nor are publicity,
+-          privacy, and/or other similar personality rights; however, to
+-          the extent possible, the Licensor waives and/or agrees not to
+-          assert any such rights held by the Licensor to the limited
+-          extent necessary to allow You to exercise the Licensed
+-          Rights, but not otherwise.
+-
+-       2. Patent and trademark rights are not licensed under this
+-          Public License.
+-
+-       3. To the extent possible, the Licensor waives any right to
+-          collect royalties from You for the exercise of the Licensed
+-          Rights, whether directly or through a collecting society
+-          under any voluntary or waivable statutory or compulsory
+-          licensing scheme. In all other cases the Licensor expressly
+-          reserves any right to collect such royalties.
+-
+-
+-Section 3 -- License Conditions.
+-
+-Your exercise of the Licensed Rights is expressly made subject to the
+-following conditions.
+-
+-  a. Attribution.
+-
+-       1. If You Share the Licensed Material (including in modified
+-          form), You must:
+-
+-            a. retain the following if it is supplied by the Licensor
+-               with the Licensed Material:
+-
+-                 i. identification of the creator(s) of the Licensed
+-                    Material and any others designated to receive
+-                    attribution, in any reasonable manner requested by
+-                    the Licensor (including by pseudonym if
+-                    designated);
+-
+-                ii. a copyright notice;
+-
+-               iii. a notice that refers to this Public License;
+-
+-                iv. a notice that refers to the disclaimer of
+-                    warranties;
+-
+-                 v. a URI or hyperlink to the Licensed Material to the
+-                    extent reasonably practicable;
+-
+-            b. indicate if You modified the Licensed Material and
+-               retain an indication of any previous modifications; and
+-
+-            c. indicate the Licensed Material is licensed under this
+-               Public License, and include the text of, or the URI or
+-               hyperlink to, this Public License.
+-
+-       2. You may satisfy the conditions in Section 3(a)(1) in any
+-          reasonable manner based on the medium, means, and context in
+-          which You Share the Licensed Material. For example, it may be
+-          reasonable to satisfy the conditions by providing a URI or
+-          hyperlink to a resource that includes the required
+-          information.
+-
+-       3. If requested by the Licensor, You must remove any of the
+-          information required by Section 3(a)(1)(A) to the extent
+-          reasonably practicable.
+-
+-       4. If You Share Adapted Material You produce, the Adapter's
+-          License You apply must not prevent recipients of the Adapted
+-          Material from complying with this Public License.
+-
+-
+-Section 4 -- Sui Generis Database Rights.
+-
+-Where the Licensed Rights include Sui Generis Database Rights that
+-apply to Your use of the Licensed Material:
+-
+-  a. for the avoidance of doubt, Section 2(a)(1) grants You the right
+-     to extract, reuse, reproduce, and Share all or a substantial
+-     portion of the contents of the database;
+-
+-  b. if You include all or a substantial portion of the database
+-     contents in a database in which You have Sui Generis Database
+-     Rights, then the database in which You have Sui Generis Database
+-     Rights (but not its individual contents) is Adapted Material; and
+-
+-  c. You must comply with the conditions in Section 3(a) if You Share
+-     all or a substantial portion of the contents of the database.
+-
+-For the avoidance of doubt, this Section 4 supplements and does not
+-replace Your obligations under this Public License where the Licensed
+-Rights include other Copyright and Similar Rights.
+-
+-
+-Section 5 -- Disclaimer of Warranties and Limitation of Liability.
+-
+-  a. UNLESS OTHERWISE SEPARATELY UNDERTAKEN BY THE LICENSOR, TO THE
+-     EXTENT POSSIBLE, THE LICENSOR OFFERS THE LICENSED MATERIAL AS-IS
+-     AND AS-AVAILABLE, AND MAKES NO REPRESENTATIONS OR WARRANTIES OF
+-     ANY KIND CONCERNING THE LICENSED MATERIAL, WHETHER EXPRESS,
+-     IMPLIED, STATUTORY, OR OTHER. THIS INCLUDES, WITHOUT LIMITATION,
+-     WARRANTIES OF TITLE, MERCHANTABILITY, FITNESS FOR A PARTICULAR
+-     PURPOSE, NON-INFRINGEMENT, ABSENCE OF LATENT OR OTHER DEFECTS,
+-     ACCURACY, OR THE PRESENCE OR ABSENCE OF ERRORS, WHETHER OR NOT
+-     KNOWN OR DISCOVERABLE. WHERE DISCLAIMERS OF WARRANTIES ARE NOT
+-     ALLOWED IN FULL OR IN PART, THIS DISCLAIMER MAY NOT APPLY TO YOU.
+-
+-  b. TO THE EXTENT POSSIBLE, IN NO EVENT WILL THE LICENSOR BE LIABLE
+-     TO YOU ON ANY LEGAL THEORY (INCLUDING, WITHOUT LIMITATION,
+-     NEGLIGENCE) OR OTHERWISE FOR ANY DIRECT, SPECIAL, INDIRECT,
+-     INCIDENTAL, CONSEQUENTIAL, PUNITIVE, EXEMPLARY, OR OTHER LOSSES,
+-     COSTS, EXPENSES, OR DAMAGES ARISING OUT OF THIS PUBLIC LICENSE OR
+-     USE OF THE LICENSED MATERIAL, EVEN IF THE LICENSOR HAS BEEN
+-     ADVISED OF THE POSSIBILITY OF SUCH LOSSES, COSTS, EXPENSES, OR
+-     DAMAGES. WHERE A LIMITATION OF LIABILITY IS NOT ALLOWED IN FULL OR
+-     IN PART, THIS LIMITATION MAY NOT APPLY TO YOU.
+-
+-  c. The disclaimer of warranties and limitation of liability provided
+-     above shall be interpreted in a manner that, to the extent
+-     possible, most closely approximates an absolute disclaimer and
+-     waiver of all liability.
+-
+-
+-Section 6 -- Term and Termination.
+-
+-  a. This Public License applies for the term of the Copyright and
+-     Similar Rights licensed here. However, if You fail to comply with
+-     this Public License, then Your rights under this Public License
+-     terminate automatically.
+-
+-  b. Where Your right to use the Licensed Material has terminated under
+-     Section 6(a), it reinstates:
+-
+-       1. automatically as of the date the violation is cured, provided
+-          it is cured within 30 days of Your discovery of the
+-          violation; or
+-
+-       2. upon express reinstatement by the Licensor.
+-
+-     For the avoidance of doubt, this Section 6(b) does not affect any
+-     right the Licensor may have to seek remedies for Your violations
+-     of this Public License.
+-
+-  c. For the avoidance of doubt, the Licensor may also offer the
+-     Licensed Material under separate terms or conditions or stop
+-     distributing the Licensed Material at any time; however, doing so
+-     will not terminate this Public License.
+-
+-  d. Sections 1, 5, 6, 7, and 8 survive termination of this Public
+-     License.
+-
+-
+-Section 7 -- Other Terms and Conditions.
+-
+-  a. The Licensor shall not be bound by any additional or different
+-     terms or conditions communicated by You unless expressly agreed.
+-
+-  b. Any arrangements, understandings, or agreements regarding the
+-     Licensed Material not stated herein are separate from and
+-     independent of the terms and conditions of this Public License.
+-
+-
+-Section 8 -- Interpretation.
+-
+-  a. For the avoidance of doubt, this Public License does not, and
+-     shall not be interpreted to, reduce, limit, restrict, or impose
+-     conditions on any use of the Licensed Material that could lawfully
+-     be made without permission under this Public License.
+-
+-  b. To the extent possible, if any provision of this Public License is
+-     deemed unenforceable, it shall be automatically reformed to the
+-     minimum extent necessary to make it enforceable. If the provision
+-     cannot be reformed, it shall be severed from this Public License
+-     without affecting the enforceability of the remaining terms and
+-     conditions.
+-
+-  c. No term or condition of this Public License will be waived and no
+-     failure to comply consented to unless expressly agreed to by the
+-     Licensor.
+-
+-  d. Nothing in this Public License constitutes or may be interpreted
+-     as a limitation upon, or waiver of, any privileges and immunities
+-     that apply to the Licensor or You, including from the legal
+-     processes of any jurisdiction or authority.
+-
+-
+-=======================================================================
+-
+-Creative Commons is not a party to its public
+-licenses. Notwithstanding, Creative Commons may elect to apply one of
+-its public licenses to material it publishes and in those instances
+-will be considered the "Licensor." The text of the Creative Commons
+-public licenses is dedicated to the public domain under the CC0 Public
+-Domain Dedication. Except for the limited purpose of indicating that
+-material is shared under a Creative Commons public license or as
+-otherwise permitted by the Creative Commons policies published at
+-creativecommons.org/policies, Creative Commons does not authorize the
+-use of the trademark "Creative Commons" or any other trademark or logo
+-of Creative Commons without its prior written consent including,
+-without limitation, in connection with any unauthorized modifications
+-to any of its public licenses or any other arrangements,
+-understandings, or agreements concerning use of licensed material. For
+-the avoidance of doubt, this paragraph does not form part of the
+-public licenses.
+-
+-Creative Commons may be contacted at creativecommons.org.
++                                 Apache License
++                           Version 2.0, January 2004
++                        http://www.apache.org/licenses/
++
++   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
++
++   1. Definitions.
++
++      "License" shall mean the terms and conditions for use, reproduction,
++      and distribution as defined by Sections 1 through 9 of this document.
++
++      "Licensor" shall mean the copyright owner or entity authorized by
++      the copyright owner that is granting the License.
++
++      "Legal Entity" shall mean the union of the acting entity and all
++      other entities that control, are controlled by, or are under common
++      control with that entity. For the purposes of this definition,
++      "control" means (i) the power, direct or indirect, to cause the
++      direction or management of such entity, whether by contract or
++      otherwise, or (ii) ownership of fifty percent (50%) or more of the
++      outstanding shares, or (iii) beneficial ownership of such entity.
++
++      "You" (or "Your") shall mean an individual or Legal Entity
++      exercising permissions granted by this License.
++
++      "Source" form shall mean the preferred form for making modifications,
++      including but not limited to software source code, documentation
++      source, and configuration files.
++
++      "Object" form shall mean any form resulting from mechanical
++      transformation or translation of a Source form, including but
++      not limited to compiled object code, generated documentation,
++      and conversions to other media types.
++
++      "Work" shall mean the work of authorship, whether in Source or
++      Object form, made available under the License, as indicated by a
++      copyright notice that is included in or attached to the work
++      (an example is provided in the Appendix below).
++
++      "Derivative Works" shall mean any work, whether in Source or Object
++      form, that is based on (or derived from) the Work and for which the
++      editorial revisions, annotations, elaborations, or other modifications
++      represent, as a whole, an original work of authorship. For the purposes
++      of this License, Derivative Works shall not include works that remain
++      separable from, or merely link (or bind by name) to the interfaces of,
++      the Work and Derivative Works thereof.
++
++      "Contribution" shall mean any work of authorship, including
++      the original version of the Work and any modifications or additions
++      to that Work or Derivative Works thereof, that is intentionally
++      submitted to Licensor for inclusion in the Work by the copyright owner
++      or by an individual or Legal Entity authorized to submit on behalf of
++      the copyright owner. For the purposes of this definition, "submitted"
++      means any form of electronic, verbal, or written communication sent
++      to the Licensor or its representatives, including but not limited to
++      communication on electronic mailing lists, source code control systems,
++      and issue tracking systems that are managed by, or on behalf of, the
++      Licensor for the purpose of discussing and improving the Work, but
++      excluding communication that is conspicuously marked or otherwise
++      designated in writing by the copyright owner as "Not a Contribution."
++
++      "Contributor" shall mean Licensor and any individual or Legal Entity
++      on behalf of whom a Contribution has been received by Licensor and
++      subsequently incorporated within the Work.
++
++   2. Grant of Copyright License. Subject to the terms and conditions of
++      this License, each Contributor hereby grants to You a perpetual,
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
++      copyright license to reproduce, prepare Derivative Works of,
++      publicly display, publicly perform, sublicense, and distribute the
++      Work and such Derivative Works in Source or Object form.
++
++   3. Grant of Patent License. Subject to the terms and conditions of
++      this License, each Contributor hereby grants to You a perpetual,
++      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
++      (except as stated in this section) patent license to make, have made,
++      use, offer to sell, sell, import, and otherwise transfer the Work,
++      where such license applies only to those patent claims licensable
++      by such Contributor that are necessarily infringed by their
++      Contribution(s) alone or by combination of their Contribution(s)
++      with the Work to which such Contribution(s) was submitted. If You
++      institute patent litigation against any entity (including a
++      cross-claim or counterclaim in a lawsuit) alleging that the Work
++      or a Contribution incorporated within the Work constitutes direct
++      or contributory patent infringement, then any patent licenses
++      granted to You under this License for that Work shall terminate
++      as of the date such litigation is filed.
++
++   4. Redistribution. You may reproduce and distribute copies of the
++      Work or Derivative Works thereof in any medium, with or without
++      modifications, and in Source or Object form, provided that You
++      meet the following conditions:
++
++      (a) You must give any other recipients of the Work or
++          Derivative Works a copy of this License; and
++
++      (b) You must cause any modified files to carry prominent notices
++          stating that You changed the files; and
++
++      (c) You must retain, in the Source form of any Derivative Works
++          that You distribute, all copyright, patent, trademark, and
++          attribution notices from the Source form of the Work,
++          excluding those notices that do not pertain to any part of
++          the Derivative Works; and
++
++      (d) If the Work includes a "NOTICE" text file as part of its
++          distribution, then any Derivative Works that You distribute must
++          include a readable copy of the attribution notices contained
++          within such NOTICE file, excluding those notices that do not
++          pertain to any part of the Derivative Works, in at least one
++          of the following places: within a NOTICE text file distributed
++          as part of the Derivative Works; within the Source form or
++          documentation, if provided along with the Derivative Works; or,
++          within a display generated by the Derivative Works, if and
++          wherever such third-party notices normally appear. The contents
++          of the NOTICE file are for informational purposes only and
++          do not modify the License. You may add Your own attribution
++          notices within Derivative Works that You distribute, alongside
++          or as an addendum to the NOTICE text from the Work, provided
++          that such additional attribution notices cannot be construed
++          as modifying the License.
++
++      You may add Your own copyright statement to Your modifications and
++      may provide additional or different license terms and conditions
++      for use, reproduction, or distribution of Your modifications, or
++      for any such Derivative Works as a whole, provided Your use,
++      reproduction, and distribution of the Work otherwise complies with
++      the conditions stated in this License.
++
++   5. Submission of Contributions. Unless You explicitly state otherwise,
++      any Contribution intentionally submitted for inclusion in the Work
++      by You to the Licensor shall be under the terms and conditions of
++      this License, without any additional terms or conditions.
++      Notwithstanding the above, nothing herein shall supersede or modify
++      the terms of any separate license agreement you may have executed
++      with Licensor regarding such Contributions.
++
++   6. Trademarks. This License does not grant permission to use the trade
++      names, trademarks, service marks, or product names of the Licensor,
++      except as required for reasonable and customary use in describing the
++      origin of the Work and reproducing the content of the NOTICE file.
++
++   7. Disclaimer of Warranty. Unless required by applicable law or
++      agreed to in writing, Licensor provides the Work (and each
++      Contributor provides its Contributions) on an "AS IS" BASIS,
++      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
++      implied, including, without limitation, any warranties or conditions
++      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
++      PARTICULAR PURPOSE. You are solely responsible for determining the
++      appropriateness of using or redistributing the Work and assume any
++      risks associated with Your exercise of permissions under this License.
++
++   8. Limitation of Liability. In no event and under no legal theory,
++      whether in tort (including negligence), contract, or otherwise,
++      unless required by applicable law (such as deliberate and grossly
++      negligent acts) or agreed to in writing, shall any Contributor be
++      liable to You for damages, including any direct, indirect, special,
++      incidental, or consequential damages of any character arising as a
++      result of this License or out of the use or inability to use the
++      Work (including but not limited to damages for loss of goodwill,
++      work stoppage, computer failure or malfunction, or any and all
++      other commercial damages or losses), even if such Contributor
++      has been advised of the possibility of such damages.
++
++   9. Accepting Warranty or Additional Liability. While redistributing
++      the Work or Derivative Works thereof, You may choose to offer,
++      and charge a fee for, acceptance of support, warranty, indemnity,
++      or other liability obligations and/or rights consistent with this
++      License. However, in accepting such obligations, You may act only
++      on Your own behalf and on Your sole responsibility, not on behalf
++      of any other Contributor, and only if You agree to indemnify,
++      defend, and hold each Contributor harmless for any liability
++      incurred by, or claims asserted against, such Contributor by reason
++      of your accepting any such warranty or additional liability.
++
++   END OF TERMS AND CONDITIONS
++
++   APPENDIX: How to apply the Apache License to your work.
++
++      To apply the Apache License to your work, attach the following
++      boilerplate notice, with the fields enclosed by brackets "[]"
++      replaced with your own identifying information. (Don't include
++      the brackets!)  The text should be enclosed in the appropriate
++      comment syntax for the file format. We also recommend that a
++      file or class name and description of purpose be included on the
++      same "printed page" as the copyright notice for easier
++      identification within third-party archives.
++
++   Copyright [yyyy] [name of copyright owner]
++
++   Licensed under the Apache License, Version 2.0 (the "License");
++   you may not use this file except in compliance with the License.
++   You may obtain a copy of the License at
++
++       http://www.apache.org/licenses/LICENSE-2.0
++
++   Unless required by applicable law or agreed to in writing, software
++   distributed under the License is distributed on an "AS IS" BASIS,
++   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++   See the License for the specific language governing permissions and
++   limitations under the License.
+diff --git a/Makefile b/Makefile
+index 0d9f20306a..8cc3ba0d9f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -67,7 +67,7 @@ container-image:
+ 		--build-arg HUGO_VERSION=$(HUGO_VERSION)
+ 
+ container-build: module-check
+-	$(CONTAINER_RUN) --read-only --mount type=tmpfs,destination=/tmp,tmpfs-mode=01777 $(CONTAINER_IMAGE) sh -c "npm ci && hugo --minify --environment development"
++	$(CONTAINER_RUN) --read-only --mount type=tmpfs,destination=/tmp,tmpfs-mode=01777 $(CONTAINER_IMAGE) sh -c "hugo --minify --environment development"
+ 
+ container-serve: module-check
+ 	$(CONTAINER_RUN) --read-only --mount type=tmpfs,destination=/tmp,tmpfs-mode=01777 -p 1313:1313 $(CONTAINER_IMAGE) hugo server --buildFuture --environment development --bind 0.0.0.0 --destination /tmp/hugo --cleanDestinationDir
+diff --git a/README.md b/README.md
+index c19aae489c..f3c9f2bf98 100644
+--- a/README.md
++++ b/README.md
+@@ -1,145 +1,196 @@
+-# The Kubernetes documentation
++<img src="https://raw.githubusercontent.com/gohugoio/gohugoioTheme/master/static/images/hugo-logo-wide.svg?sanitize=true" alt="Hugo" width="565">
+ 
+-[![Netlify Status](https://api.netlify.com/api/v1/badges/be93b718-a6df-402a-b4a4-855ba186c97d/deploy-status)](https://app.netlify.com/sites/kubernetes-io-master-staging/deploys) [![GitHub release](https://img.shields.io/github/release/kubernetes/website.svg)](https://github.com/kubernetes/website/releases/latest)
++A Fast and Flexible Static Site Generator built with love by [bep](https://github.com/bep), [spf13](http://spf13.com/) and [friends](https://github.com/gohugoio/hugo/graphs/contributors) in [Go][].
+ 
+-This repository contains the assets required to build the [Kubernetes website and documentation](https://kubernetes.io/). We're glad that you want to contribute!
++[Website](https://gohugo.io) |
++[Forum](https://discourse.gohugo.io) |
++[Documentation](https://gohugo.io/getting-started/) |
++[Installation Guide](https://gohugo.io/getting-started/installing/) |
++[Contribution Guide](CONTRIBUTING.md) |
++[Twitter](https://twitter.com/gohugoio)
+ 
+-# Using this repository
++[![GoDoc](https://godoc.org/github.com/gohugoio/hugo?status.svg)](https://godoc.org/github.com/gohugoio/hugo)
++[![Linux and macOS Build Status](https://api.travis-ci.org/gohugoio/hugo.svg?branch=master&label=Windows+and+Linux+and+macOS+build "Windows, Linux and macOS Build Status")](https://travis-ci.org/gohugoio/hugo)
++[![Go Report Card](https://goreportcard.com/badge/github.com/gohugoio/hugo)](https://goreportcard.com/report/github.com/gohugoio/hugo)
+ 
+-You can run the website locally using Hugo (Extended version), or you can run it in a container runtime. We strongly recommend using the container runtime, as it gives deployment consistency with the live website.
++## Overview
+ 
+-## Prerequisites
++Hugo is a static HTML and CSS website generator written in [Go][].
++It is optimized for speed, ease of use, and configurability.
++Hugo takes a directory with content and templates and renders them into a full HTML website.
+ 
+-To use this repository, you need the following installed locally:
++Hugo relies on Markdown files with front matter for metadata, and you can run Hugo from any directory.
++This works well for shared hosts and other systems where you don’t have a privileged account.
+ 
+-- [npm](https://www.npmjs.com/)
+-- [Go](https://golang.org/)
+-- [Hugo (Extended version)](https://gohugo.io/)
+-- A container runtime, like [Docker](https://www.docker.com/).
++Hugo renders a typical website of moderate size in a fraction of a second.
++A good rule of thumb is that each piece of content renders in around 1 millisecond.
+ 
+-Before you start, install the dependencies. Clone the repository and navigate to the directory:
++Hugo is designed to work well for any kind of website including blogs, tumbles, and docs.
+ 
+-```
+-git clone https://github.com/kubernetes/website.git
+-cd website
+-```
++#### Supported Architectures
+ 
+-The Kubernetes website uses the [Docsy Hugo theme](https://github.com/google/docsy#readme). Even if you plan to run the website in a container, we strongly recommend pulling in the submodule and other development dependencies by running the following:
++Currently, we provide pre-built Hugo binaries for Windows, Linux, FreeBSD, NetBSD, DragonFly BSD, Open BSD, macOS (Darwin), and [Android](https://gist.github.com/bep/a0d8a26cf6b4f8bc992729b8e50b480b) for x64, i386 and ARM architectures.
+ 
+-```
+-# pull in the Docsy submodule
+-git submodule update --init --recursive --depth 1
+-```
++Hugo may also be compiled from source wherever the Go compiler tool chain can run, e.g. for other operating systems including Plan 9 and Solaris.
+ 
+-## Running the website using a container
++**Complete documentation is available at [Hugo Documentation](https://gohugo.io/getting-started/).**
+ 
+-To build the site in a container, run the following to build the container image and run it:
++## Choose How to Install
+ 
+-```
+-make container-image
+-make container-serve
+-```
+-
+-Open up your browser to http://localhost:1313 to view the website. As you make changes to the source files, Hugo updates the website and forces a browser refresh.
++If you want to use Hugo as your site generator, simply install the Hugo binaries.
++The Hugo binaries have no external dependencies.
+ 
+-## Running the website locally using Hugo
++To contribute to the Hugo source code or documentation, you should [fork the Hugo GitHub project](https://github.com/gohugoio/hugo#fork-destination-box) and clone it to your local machine.
+ 
+-Make sure to install the Hugo extended version specified by the `HUGO_VERSION` environment variable in the [`netlify.toml`](netlify.toml#L10) file.
++Finally, you can install the Hugo source code with `go`, build the binaries yourself, and run Hugo that way.
++Building the binaries is an easy task for an experienced `go` getter.
+ 
+-To build and test the site locally, run:
++### Install Hugo as Your Site Generator (Binary Install)
+ 
+-```bash
+-# install dependencies
+-npm ci
+-make serve
+-```
++Use the [installation instructions in the Hugo documentation](https://gohugo.io/getting-started/installing/).
+ 
+-This will start the local Hugo server on port 1313. Open up your browser to http://localhost:1313 to view the website. As you make changes to the source files, Hugo updates the website and forces a browser refresh.
++### Build and Install the Binaries from Source (Advanced Install)
+ 
+-## Troubleshooting
+-### error: failed to transform resource: TOCSS: failed to transform "scss/main.scss" (text/x-scss): this feature is not available in your current Hugo version
++#### Prerequisite Tools
+ 
+-Hugo is shipped in two set of binaries for technical reasons. The current website runs based on the **Hugo Extended** version only. In the [release page](https://github.com/gohugoio/hugo/releases) look for archives with `extended` in the name. To confirm, run `hugo version` and look for the word `extended`.
++* [Git](https://git-scm.com/)
++* [Go (we test it with the last 2 major versions)](https://golang.org/dl/)
+ 
+-### Troubleshooting macOS for too many open files
++#### Fetch from GitHub
+ 
+-If you run `make serve` on macOS and receive the following error:
++Since Hugo 0.48, Hugo uses the Go Modules support built into Go 1.11 to build. The easiest is to clone Hugo in a directory outside of `GOPATH`, as in the following example:
+ 
++```bash
++mkdir $HOME/src
++cd $HOME/src
++git clone https://github.com/gohugoio/hugo.git
++cd hugo
++go install
+ ```
+-ERROR 2020/08/01 19:09:18 Error: listen tcp 127.0.0.1:1313: socket: too many open files
+-make: *** [serve] Error 1
+-```
+-
+-Try checking the current limit for open files:
+ 
+-`launchctl limit maxfiles`
++**If you are a Windows user, substitute the `$HOME` environment variable above with `%USERPROFILE%`.**
+ 
+-Then run the following commands (adapted from https://gist.github.com/tombigel/d503800a282fcadbee14b537735d202c):
++If you want to compile with Sass/SCSS support use `--tags extended` and make sure `CGO_ENABLED=1` is set in your go environment. If you don't want to have CGO enabled, you may use the following command to temporarily enable CGO only for hugo compilation:
+ 
++```bash
++CGO_ENABLED=1 go install --tags extended
+ ```
+-#!/bin/sh
+-
+-# These are the original gist links, linking to my gists now.
+-# curl -O https://gist.githubusercontent.com/a2ikm/761c2ab02b7b3935679e55af5d81786a/raw/ab644cb92f216c019a2f032bbf25e258b01d87f9/limit.maxfiles.plist
+-# curl -O https://gist.githubusercontent.com/a2ikm/761c2ab02b7b3935679e55af5d81786a/raw/ab644cb92f216c019a2f032bbf25e258b01d87f9/limit.maxproc.plist
+ 
+-curl -O https://gist.githubusercontent.com/tombigel/d503800a282fcadbee14b537735d202c/raw/ed73cacf82906fdde59976a0c8248cce8b44f906/limit.maxfiles.plist
+-curl -O https://gist.githubusercontent.com/tombigel/d503800a282fcadbee14b537735d202c/raw/ed73cacf82906fdde59976a0c8248cce8b44f906/limit.maxproc.plist
++## The Hugo Documentation
+ 
+-sudo mv limit.maxfiles.plist /Library/LaunchDaemons
+-sudo mv limit.maxproc.plist /Library/LaunchDaemons
++The Hugo documentation now lives in its own repository, see https://github.com/gohugoio/hugoDocs. But we do keep a version of that documentation as a `git subtree` in this repository. To build the sub folder `/docs` as a Hugo site, you need to clone this repo:
+ 
+-sudo chown root:wheel /Library/LaunchDaemons/limit.maxfiles.plist
+-sudo chown root:wheel /Library/LaunchDaemons/limit.maxproc.plist
+-
+-sudo launchctl load -w /Library/LaunchDaemons/limit.maxfiles.plist
++```bash
++git clone git@github.com:gohugoio/hugo.git
+ ```
+-
+-This works for Catalina as well as Mojave macOS.
+-
+-
+-# Get involved with SIG Docs
+-
+-Learn more about SIG Docs Kubernetes community and meetings on the [community page](https://github.com/kubernetes/community/tree/master/sig-docs#meetings).
+-
+-You can also reach the maintainers of this project at:
+-
+-- [Slack](https://kubernetes.slack.com/messages/sig-docs) [Get an invite for this Slack](https://slack.k8s.io/)
+-- [Mailing List](https://groups.google.com/forum/#!forum/kubernetes-sig-docs)
+-
+-# Contributing to the docs
+-
+-You can click the **Fork** button in the upper-right area of the screen to create a copy of this repository in your GitHub account. This copy is called a *fork*. Make any changes you want in your fork, and when you are ready to send those changes to us, go to your fork and create a new pull request to let us know about it.
+-
+-Once your pull request is created, a Kubernetes reviewer will take responsibility for providing clear, actionable feedback.  As the owner of the pull request, **it is your responsibility to modify your pull request to address the feedback that has been provided to you by the Kubernetes reviewer.**
+-
+-Also, note that you may end up having more than one Kubernetes reviewer provide you feedback or you may end up getting feedback from a Kubernetes reviewer that is different than the one initially assigned to provide you feedback.
+-
+-Furthermore, in some cases, one of your reviewers might ask for a technical review from a Kubernetes tech reviewer when needed.  Reviewers will do their best to provide feedback in a timely fashion but response time can vary based on circumstances.
+-
+-For more information about contributing to the Kubernetes documentation, see:
+-
+-* [Contribute to Kubernetes docs](https://kubernetes.io/docs/contribute/)
+-* [Page Content Types](https://kubernetes.io/docs/contribute/style/page-content-types/)
+-* [Documentation Style Guide](https://kubernetes.io/docs/contribute/style/style-guide/)
+-* [Localizing Kubernetes Documentation](https://kubernetes.io/docs/contribute/localization/)
+-
+-# Localization `README.md`'s
+-
+-| Language  | Language |
+-|---|---|
+-|[Chinese](README-zh.md)|[Korean](README-ko.md)|
+-|[French](README-fr.md)|[Polish](README-pl.md)|
+-|[German](README-de.md)|[Portuguese](README-pt.md)|
+-|[Hindi](README-hi.md)|[Russian](README-ru.md)|
+-|[Indonesian](README-id.md)|[Spanish](README-es.md)|
+-|[Italian](README-it.md)|[Ukrainian](README-uk.md)|
+-|[Japanese](README-ja.md)|[Vietnamese](README-vi.md)|
+-
+-# Code of conduct
+-
+-Participation in the Kubernetes community is governed by the [CNCF Code of Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md).
+-
+-# Thank you!
+-
+-Kubernetes thrives on community participation, and we appreciate your contributions to our website and our documentation!
++## Contributing to Hugo
++
++For a complete guide to contributing to Hugo, see the [Contribution Guide](CONTRIBUTING.md).
++
++We welcome contributions to Hugo of any kind including documentation, themes,
++organization, tutorials, blog posts, bug reports, issues, feature requests,
++feature implementations, pull requests, answering questions on the forum,
++helping to manage issues, etc.
++
++The Hugo community and maintainers are [very active](https://github.com/gohugoio/hugo/pulse/monthly) and helpful, and the project benefits greatly from this activity.
++
++### Asking Support Questions
++
++We have an active [discussion forum](https://discourse.gohugo.io) where users and developers can ask questions.
++Please don't use the GitHub issue tracker to ask questions.
++
++### Reporting Issues
++
++If you believe you have found a defect in Hugo or its documentation, use
++the GitHub issue tracker to report the problem to the Hugo maintainers.
++If you're not sure if it's a bug or not, start by asking in the [discussion forum](https://discourse.gohugo.io).
++When reporting the issue, please provide the version of Hugo in use (`hugo version`).
++
++### Submitting Patches
++
++The Hugo project welcomes all contributors and contributions regardless of skill or experience level.
++If you are interested in helping with the project, we will help you with your contribution.
++Hugo is a very active project with many contributions happening daily.
++
++We want to create the best possible product for our users and the best contribution experience for our developers,
++we have a set of guidelines which ensure that all contributions are acceptable.
++The guidelines are not intended as a filter or barrier to participation.
++If you are unfamiliar with the contribution process, the Hugo team will help you and teach you how to bring your contribution in accordance with the guidelines.
++
++For a complete guide to contributing code to Hugo, see the [Contribution Guide](CONTRIBUTING.md).
++
++[![Analytics](https://ga-beacon.appspot.com/UA-7131036-6/hugo/readme)](https://github.com/igrigorik/ga-beacon)
++
++[Go]: https://golang.org/
++[Hugo Documentation]: https://gohugo.io/overview/introduction/
++
++## Dependencies
++
++Hugo stands on the shoulder of many great open source libraries, in lexical order:
++
++ | Dependency  | License |
++ | :------------- | :------------- |
++ | [github.com/alecthomas/chroma](https://github.com/alecthomas/chroma) | MIT License |
++ | [github.com/armon/go-radix](https://github.com/armon/go-radix) | MIT License |
++ | [github.com/aws/aws-sdk-go](https://github.com/aws/aws-sdk-go) | Apache License 2.0 |
++ | [github.com/bep/debounce](https://github.com/bep/debounce) | MIT License |
++ | [github.com/bep/gitmap](https://github.com/bep/gitmap) | MIT License |
++ | [github.com/bep/golibsass](https://github.com/bep/golibsass) | MIT License |
++ | [github.com/bep/tmc](https://github.com/bep/tmc) | MIT License |
++ | [github.com/BurntSushi/locker](https://github.com/BurntSushi/locker) | The Unlicense |
++ | [github.com/BurntSushi/toml](https://github.com/BurntSushi/toml) | MIT License |
++ | [github.com/cpuguy83/go-md2man](https://github.com/cpuguy83/go-md2man) | MIT License |
++ | [github.com/danwakefield/fnmatch](https://github.com/danwakefield/fnmatch) | BSD 2-Clause "Simplified" License |
++ | [github.com/disintegration/gift](https://github.com/disintegration/gift) | MIT License |
++ | [github.com/dustin/go-humanize](https://github.com/dustin/go-humanize) | MIT License |
++ | [github.com/fsnotify/fsnotify](https://github.com/fsnotify/fsnotify) | BSD 3-Clause "New" or "Revised" License |
++ | [github.com/gobwas/glob](https://github.com/gobwas/glob) | MIT License |
++ | [github.com/gorilla/websocket](https://github.com/gorilla/websocket) | BSD 2-Clause "Simplified" License |
++ | [github.com/hashicorp/golang-lru](https://github.com/hashicorp/golang-lru) | Mozilla Public License 2.0 |
++ | [github.com/hashicorp/hcl](https://github.com/hashicorp/hcl) | Mozilla Public License 2.0 |
++ | [github.com/jdkato/prose](https://github.com/jdkato/prose) | MIT License |
++ | [github.com/kr/pretty](https://github.com/kr/pretty) | MIT License |
++ | [github.com/kyokomi/emoji](https://github.com/kyokomi/emoji) | MIT License |
++ | [github.com/magiconair/properties](https://github.com/magiconair/properties) | BSD 2-Clause "Simplified" License |
++ | [github.com/markbates/inflect](https://github.com/markbates/inflect) | MIT License |
++ | [github.com/mattn/go-isatty](https://github.com/mattn/go-isatty) | MIT License |
++ | [github.com/mattn/go-runewidth](https://github.com/mattn/go-runewidth) | MIT License |
++ | [github.com/miekg/mmark](https://github.com/miekg/mmark) | Simplified BSD License |
++ | [github.com/mitchellh/hashstructure](https://github.com/mitchellh/hashstructure) | MIT License |
++ | [github.com/mitchellh/mapstructure](https://github.com/mitchellh/mapstructure) | MIT License |
++ | [github.com/muesli/smartcrop](https://github.com/muesli/smartcrop) | MIT License |
++ | [github.com/nicksnyder/go-i18n](https://github.com/nicksnyder/go-i18n) | MIT License |
++ | [github.com/niklasfasching/go-org](https://github.com/niklasfasching/go-org) | MIT License |
++ | [github.com/olekukonko/tablewriter](https://github.com/olekukonko/tablewriter) | MIT License |
++ | [github.com/pelletier/go-toml](https://github.com/pelletier/go-toml) | MIT License |
++ | [github.com/pkg/errors](https://github.com/pkg/errors) | BSD 2-Clause "Simplified" License |
++ | [github.com/PuerkitoBio/purell](https://github.com/PuerkitoBio/purell) | BSD 3-Clause "New" or "Revised" License |
++ | [github.com/PuerkitoBio/urlesc](https://github.com/PuerkitoBio/urlesc) | BSD 3-Clause "New" or "Revised" License |
++ | [github.com/rogpeppe/go-internal](https://github.com/rogpeppe/go-internal) | BSD 3-Clause "New" or "Revised" License |
++ | [github.com/russross/blackfriday](https://github.com/russross/blackfriday)  | Simplified BSD License |
++ | [github.com/rwcarlsen/goexif](https://github.com/rwcarlsen/goexif) | BSD 2-Clause "Simplified" License |
++ | [github.com/spf13/afero](https://github.com/spf13/afero) | Apache License 2.0 |
++ | [github.com/spf13/cast](https://github.com/spf13/cast) | MIT License |
++ | [github.com/spf13/cobra](https://github.com/spf13/cobra) | Apache License 2.0 |
++ | [github.com/spf13/fsync](https://github.com/spf13/fsync) | MIT License |
++ | [github.com/spf13/jwalterweatherman](https://github.com/spf13/jwalterweatherman) | MIT License |
++ | [github.com/spf13/pflag](https://github.com/spf13/pflag) | BSD 3-Clause "New" or "Revised" License |
++ | [github.com/spf13/viper](https://github.com/spf13/viper) | MIT License |
++ | [github.com/tdewolff/minify](https://github.com/tdewolff/minify) | MIT License |
++ | [github.com/tdewolff/parse](https://github.com/tdewolff/parse) | MIT License |
++ | [github.com/yuin/goldmark](https://github.com/yuin/goldmark) | MIT License |
++ | [github.com/yuin/goldmark-highlighting](https://github.com/yuin/goldmark-highlighting) | MIT License |
++ | [go.opencensus.io](https://go.opencensus.io) | Apache License 2.0 |
++ | [go.uber.org/atomic](https://go.uber.org/atomic) | MIT License |
++ | [gocloud.dev](https://gocloud.dev) | Apache License 2.0 |
++ | [golang.org/x/image](https://golang.org/x/image) | BSD 3-Clause "New" or "Revised" License |
++ | [golang.org/x/net](https://golang.org/x/net) | BSD 3-Clause "New" or "Revised" License |
++ | [golang.org/x/oauth2](https://golang.org/x/oauth2) | BSD 3-Clause "New" or "Revised" License |
++ | [golang.org/x/sync](https://golang.org/x/sync) | BSD 3-Clause "New" or "Revised" License |
++ | [golang.org/x/sys](https://golang.org/x/sys) | BSD 3-Clause "New" or "Revised" License |
++ | [golang.org/x/text](https://golang.org/x/text) | BSD 3-Clause "New" or "Revised" License |
++ | [golang.org/x/xerrors](https://golang.org/x/xerrors) | BSD 3-Clause "New" or "Revised" License |
++ | [google.golang.org/api](https://google.golang.org/api) | BSD 3-Clause "New" or "Revised" License |
++ | [google.golang.org/genproto](https://google.golang.org/genproto) | Apache License 2.0 |
++ | [gopkg.in/ini.v1](https://gopkg.in/ini.v1) | Apache License 2.0 |
++ | [gopkg.in/yaml.v2](https://gopkg.in/yaml.v2) | Apache License 2.0 |
+diff --git a/package-lock.json b/package-lock.json
+index ab0163bc23..730649add8 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1,6 +1,1317 @@
+ {
++  "name": "website",
++  "lockfileVersion": 2,
+   "requires": true,
+-  "lockfileVersion": 1,
++  "packages": {
++    "": {
++      "devDependencies": {
++        "autoprefixer": "^9.8.4",
++        "postcss-cli": "^7.1.1"
++      }
++    },
++    "node_modules/@babel/runtime-corejs3": {
++      "version": "7.10.4",
++      "resolved": "https://registry.npmjs.org/@babel/runtime-corejs3/-/runtime-corejs3-7.10.4.tgz",
++      "integrity": "sha512-BFlgP2SoLO9HJX9WBwN67gHWMBhDX/eDz64Jajd6mR/UAUzqrNMm99d4qHnVaKscAElZoFiPv+JpR/Siud5lXw==",
++      "dev": true,
++      "dependencies": {
++        "core-js-pure": "^3.0.0",
++        "regenerator-runtime": "^0.13.4"
++      }
++    },
++    "node_modules/@nodelib/fs.scandir": {
++      "version": "2.1.3",
++      "resolved": "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.3.tgz",
++      "integrity": "sha512-eGmwYQn3gxo4r7jdQnkrrN6bY478C3P+a/y72IJukF8LjB6ZHeB3c+Ehacj3sYeSmUXGlnA67/PmbM9CVwL7Dw==",
++      "dev": true,
++      "dependencies": {
++        "@nodelib/fs.stat": "2.0.3",
++        "run-parallel": "^1.1.9"
++      },
++      "engines": {
++        "node": ">= 8"
++      }
++    },
++    "node_modules/@nodelib/fs.stat": {
++      "version": "2.0.3",
++      "resolved": "https://registry.npmjs.org/@nodelib/fs.stat/-/fs.stat-2.0.3.tgz",
++      "integrity": "sha512-bQBFruR2TAwoevBEd/NWMoAAtNGzTRgdrqnYCc7dhzfoNvqPzLyqlEQnzZ3kVnNrSp25iyxE00/3h2fqGAGArA==",
++      "dev": true,
++      "engines": {
++        "node": ">= 8"
++      }
++    },
++    "node_modules/@nodelib/fs.walk": {
++      "version": "1.2.4",
++      "resolved": "https://registry.npmjs.org/@nodelib/fs.walk/-/fs.walk-1.2.4.tgz",
++      "integrity": "sha512-1V9XOY4rDW0rehzbrcqAmHnz8e7SKvX27gh8Gt2WgB0+pdzdiLV83p72kZPU+jvMbS1qU5mauP2iOvO8rhmurQ==",
++      "dev": true,
++      "dependencies": {
++        "@nodelib/fs.scandir": "2.1.3",
++        "fastq": "^1.6.0"
++      },
++      "engines": {
++        "node": ">= 8"
++      }
++    },
++    "node_modules/@types/color-name": {
++      "version": "1.1.1",
++      "resolved": "https://registry.npmjs.org/@types/color-name/-/color-name-1.1.1.tgz",
++      "integrity": "sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==",
++      "dev": true
++    },
++    "node_modules/ansi-regex": {
++      "version": "5.0.0",
++      "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-5.0.0.tgz",
++      "integrity": "sha512-bY6fj56OUQ0hU1KjFNDQuJFezqKdrAyFdIevADiqrWHwSlbmBNMHp5ak2f40Pm8JTFyM2mqxkG6ngkHO11f/lg==",
++      "dev": true,
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/ansi-styles": {
++      "version": "3.2.1",
++      "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-3.2.1.tgz",
++      "integrity": "sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA==",
++      "dev": true,
++      "dependencies": {
++        "color-convert": "^1.9.0"
++      },
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/anymatch": {
++      "version": "3.1.1",
++      "resolved": "https://registry.npmjs.org/anymatch/-/anymatch-3.1.1.tgz",
++      "integrity": "sha512-mM8522psRCqzV+6LhomX5wgp25YVibjh8Wj23I5RPkPppSVSjyKD2A2mBJmWGa+KN7f2D6LNh9jkBCeyLktzjg==",
++      "dev": true,
++      "dependencies": {
++        "normalize-path": "^3.0.0",
++        "picomatch": "^2.0.4"
++      },
++      "engines": {
++        "node": ">= 8"
++      }
++    },
++    "node_modules/argparse": {
++      "version": "1.0.10",
++      "resolved": "https://registry.npmjs.org/argparse/-/argparse-1.0.10.tgz",
++      "integrity": "sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==",
++      "dev": true,
++      "dependencies": {
++        "sprintf-js": "~1.0.2"
++      }
++    },
++    "node_modules/array-union": {
++      "version": "2.1.0",
++      "resolved": "https://registry.npmjs.org/array-union/-/array-union-2.1.0.tgz",
++      "integrity": "sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==",
++      "dev": true,
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/at-least-node": {
++      "version": "1.0.0",
++      "resolved": "https://registry.npmjs.org/at-least-node/-/at-least-node-1.0.0.tgz",
++      "integrity": "sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==",
++      "dev": true,
++      "engines": {
++        "node": ">= 4.0.0"
++      }
++    },
++    "node_modules/autoprefixer": {
++      "version": "9.8.4",
++      "resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-9.8.4.tgz",
++      "integrity": "sha512-84aYfXlpUe45lvmS+HoAWKCkirI/sw4JK0/bTeeqgHYco3dcsOn0NqdejISjptsYwNji/21dnkDri9PsYKk89A==",
++      "dev": true,
++      "dependencies": {
++        "browserslist": "^4.12.0",
++        "caniuse-lite": "^1.0.30001087",
++        "colorette": "^1.2.0",
++        "normalize-range": "^0.1.2",
++        "num2fraction": "^1.2.2",
++        "postcss": "^7.0.32",
++        "postcss-value-parser": "^4.1.0"
++      },
++      "bin": {
++        "autoprefixer": "bin/autoprefixer"
++      },
++      "funding": {
++        "type": "tidelift",
++        "url": "https://tidelift.com/funding/github/npm/autoprefixer"
++      }
++    },
++    "node_modules/binary-extensions": {
++      "version": "2.1.0",
++      "resolved": "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.1.0.tgz",
++      "integrity": "sha512-1Yj8h9Q+QDF5FzhMs/c9+6UntbD5MkRfRwac8DoEm9ZfUBZ7tZ55YcGVAzEe4bXsdQHEk+s9S5wsOKVdZrw0tQ==",
++      "dev": true,
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/braces": {
++      "version": "3.0.2",
++      "resolved": "https://registry.npmjs.org/braces/-/braces-3.0.2.tgz",
++      "integrity": "sha512-b8um+L1RzM3WDSzvhm6gIz1yfTbBt6YTlcEKAvsmqCZZFw46z626lVj9j1yEPW33H5H+lBQpZMP1k8l+78Ha0A==",
++      "dev": true,
++      "dependencies": {
++        "fill-range": "^7.0.1"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/browserslist": {
++      "version": "4.12.2",
++      "resolved": "https://registry.npmjs.org/browserslist/-/browserslist-4.12.2.tgz",
++      "integrity": "sha512-MfZaeYqR8StRZdstAK9hCKDd2StvePCYp5rHzQCPicUjfFliDgmuaBNPHYUTpAywBN8+Wc/d7NYVFkO0aqaBUw==",
++      "dev": true,
++      "dependencies": {
++        "caniuse-lite": "^1.0.30001088",
++        "electron-to-chromium": "^1.3.483",
++        "escalade": "^3.0.1",
++        "node-releases": "^1.1.58"
++      },
++      "bin": {
++        "browserslist": "cli.js"
++      },
++      "engines": {
++        "node": "^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7"
++      },
++      "funding": {
++        "type": "tidelift",
++        "url": "https://tidelift.com/funding/github/npm/browserslist"
++      }
++    },
++    "node_modules/caller-callsite": {
++      "version": "2.0.0",
++      "resolved": "https://registry.npmjs.org/caller-callsite/-/caller-callsite-2.0.0.tgz",
++      "integrity": "sha1-hH4PzgoiN1CpoCfFSzNzGtMVQTQ=",
++      "dev": true,
++      "dependencies": {
++        "callsites": "^2.0.0"
++      },
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/caller-path": {
++      "version": "2.0.0",
++      "resolved": "https://registry.npmjs.org/caller-path/-/caller-path-2.0.0.tgz",
++      "integrity": "sha1-Ro+DBE42mrIBD6xfBs7uFbsssfQ=",
++      "dev": true,
++      "dependencies": {
++        "caller-callsite": "^2.0.0"
++      },
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/callsites": {
++      "version": "2.0.0",
++      "resolved": "https://registry.npmjs.org/callsites/-/callsites-2.0.0.tgz",
++      "integrity": "sha1-BuuE8A7qQT2oav/vrL/7Ngk7PFA=",
++      "dev": true,
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/camelcase": {
++      "version": "5.3.1",
++      "resolved": "https://registry.npmjs.org/camelcase/-/camelcase-5.3.1.tgz",
++      "integrity": "sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==",
++      "dev": true,
++      "engines": {
++        "node": ">=6"
++      }
++    },
++    "node_modules/caniuse-lite": {
++      "version": "1.0.30001093",
++      "resolved": "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001093.tgz",
++      "integrity": "sha512-0+ODNoOjtWD5eS9aaIpf4K0gQqZfILNY4WSNuYzeT1sXni+lMrrVjc0odEobJt6wrODofDZUX8XYi/5y7+xl8g==",
++      "dev": true
++    },
++    "node_modules/chalk": {
++      "version": "2.4.2",
++      "resolved": "https://registry.npmjs.org/chalk/-/chalk-2.4.2.tgz",
++      "integrity": "sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==",
++      "dev": true,
++      "dependencies": {
++        "ansi-styles": "^3.2.1",
++        "escape-string-regexp": "^1.0.5",
++        "supports-color": "^5.3.0"
++      },
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/chalk/node_modules/supports-color": {
++      "version": "5.5.0",
++      "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-5.5.0.tgz",
++      "integrity": "sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==",
++      "dev": true,
++      "dependencies": {
++        "has-flag": "^3.0.0"
++      },
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/chokidar": {
++      "version": "3.4.0",
++      "resolved": "https://registry.npmjs.org/chokidar/-/chokidar-3.4.0.tgz",
++      "integrity": "sha512-aXAaho2VJtisB/1fg1+3nlLJqGOuewTzQpd/Tz0yTg2R0e4IGtshYvtjowyEumcBv2z+y4+kc75Mz7j5xJskcQ==",
++      "dev": true,
++      "dependencies": {
++        "anymatch": "~3.1.1",
++        "braces": "~3.0.2",
++        "glob-parent": "~5.1.0",
++        "is-binary-path": "~2.1.0",
++        "is-glob": "~4.0.1",
++        "normalize-path": "~3.0.0",
++        "readdirp": "~3.4.0"
++      },
++      "engines": {
++        "node": ">= 8.10.0"
++      },
++      "optionalDependencies": {
++        "fsevents": "~2.1.2"
++      }
++    },
++    "node_modules/cliui": {
++      "version": "6.0.0",
++      "resolved": "https://registry.npmjs.org/cliui/-/cliui-6.0.0.tgz",
++      "integrity": "sha512-t6wbgtoCXvAzst7QgXxJYqPt0usEfbgQdftEPbLL/cvv6HPE5VgvqCuAIDR0NgU52ds6rFwqrgakNLrHEjCbrQ==",
++      "dev": true,
++      "dependencies": {
++        "string-width": "^4.2.0",
++        "strip-ansi": "^6.0.0",
++        "wrap-ansi": "^6.2.0"
++      }
++    },
++    "node_modules/color-convert": {
++      "version": "1.9.3",
++      "resolved": "https://registry.npmjs.org/color-convert/-/color-convert-1.9.3.tgz",
++      "integrity": "sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==",
++      "dev": true,
++      "dependencies": {
++        "color-name": "1.1.3"
++      }
++    },
++    "node_modules/color-name": {
++      "version": "1.1.3",
++      "resolved": "https://registry.npmjs.org/color-name/-/color-name-1.1.3.tgz",
++      "integrity": "sha1-p9BVi9icQveV3UIyj3QIMcpTvCU=",
++      "dev": true
++    },
++    "node_modules/colorette": {
++      "version": "1.2.0",
++      "resolved": "https://registry.npmjs.org/colorette/-/colorette-1.2.0.tgz",
++      "integrity": "sha512-soRSroY+OF/8OdA3PTQXwaDJeMc7TfknKKrxeSCencL2a4+Tx5zhxmmv7hdpCjhKBjehzp8+bwe/T68K0hpIjw==",
++      "dev": true
++    },
++    "node_modules/core-js-pure": {
++      "version": "3.6.5",
++      "resolved": "https://registry.npmjs.org/core-js-pure/-/core-js-pure-3.6.5.tgz",
++      "integrity": "sha512-lacdXOimsiD0QyNf9BC/mxivNJ/ybBGJXQFKzRekp1WTHoVUWsUHEn+2T8GJAzzIhyOuXA+gOxCVN3l+5PLPUA==",
++      "deprecated": "core-js-pure@<3.23.3 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Some versions have web compatibility issues. Please, upgrade your dependencies to the actual version of core-js-pure.",
++      "dev": true,
++      "hasInstallScript": true,
++      "funding": {
++        "type": "opencollective",
++        "url": "https://opencollective.com/core-js"
++      }
++    },
++    "node_modules/cosmiconfig": {
++      "version": "5.2.1",
++      "resolved": "https://registry.npmjs.org/cosmiconfig/-/cosmiconfig-5.2.1.tgz",
++      "integrity": "sha512-H65gsXo1SKjf8zmrJ67eJk8aIRKV5ff2D4uKZIBZShbhGSpEmsQOPW/SKMKYhSTrqR7ufy6RP69rPogdaPh/kA==",
++      "dev": true,
++      "dependencies": {
++        "import-fresh": "^2.0.0",
++        "is-directory": "^0.3.1",
++        "js-yaml": "^3.13.1",
++        "parse-json": "^4.0.0"
++      },
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/decamelize": {
++      "version": "3.2.0",
++      "resolved": "https://registry.npmjs.org/decamelize/-/decamelize-3.2.0.tgz",
++      "integrity": "sha512-4TgkVUsmmu7oCSyGBm5FvfMoACuoh9EOidm7V5/J2X2djAwwt57qb3F2KMP2ITqODTCSwb+YRV+0Zqrv18k/hw==",
++      "dev": true,
++      "dependencies": {
++        "xregexp": "^4.2.4"
++      },
++      "engines": {
++        "node": ">=6"
++      }
++    },
++    "node_modules/dependency-graph": {
++      "version": "0.9.0",
++      "resolved": "https://registry.npmjs.org/dependency-graph/-/dependency-graph-0.9.0.tgz",
++      "integrity": "sha512-9YLIBURXj4DJMFALxXw9K3Y3rwb5Fk0X5/8ipCzaN84+gKxoHK43tVKRNakCQbiEx07E8Uwhuq21BpUagFhZ8w==",
++      "dev": true,
++      "engines": {
++        "node": ">= 0.6.0"
++      }
++    },
++    "node_modules/dir-glob": {
++      "version": "3.0.1",
++      "resolved": "https://registry.npmjs.org/dir-glob/-/dir-glob-3.0.1.tgz",
++      "integrity": "sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==",
++      "dev": true,
++      "dependencies": {
++        "path-type": "^4.0.0"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/electron-to-chromium": {
++      "version": "1.3.487",
++      "resolved": "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.487.tgz",
++      "integrity": "sha512-m4QS3IDShxauFfYFpnEzRCcUI55oKB9acEnHCuY/hSCZMz9Pz2KJj+UBnGHxRxS/mS1aphqOQ5wI6gc3yDZ7ew==",
++      "dev": true
++    },
++    "node_modules/emoji-regex": {
++      "version": "8.0.0",
++      "resolved": "https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz",
++      "integrity": "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==",
++      "dev": true
++    },
++    "node_modules/error-ex": {
++      "version": "1.3.2",
++      "resolved": "https://registry.npmjs.org/error-ex/-/error-ex-1.3.2.tgz",
++      "integrity": "sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==",
++      "dev": true,
++      "dependencies": {
++        "is-arrayish": "^0.2.1"
++      }
++    },
++    "node_modules/escalade": {
++      "version": "3.0.1",
++      "resolved": "https://registry.npmjs.org/escalade/-/escalade-3.0.1.tgz",
++      "integrity": "sha512-DR6NO3h9niOT+MZs7bjxlj2a1k+POu5RN8CLTPX2+i78bRi9eLe7+0zXgUHMnGXWybYcL61E9hGhPKqedy8tQA==",
++      "dev": true,
++      "engines": {
++        "node": ">=6"
++      }
++    },
++    "node_modules/escape-string-regexp": {
++      "version": "1.0.5",
++      "resolved": "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz",
++      "integrity": "sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=",
++      "dev": true,
++      "engines": {
++        "node": ">=0.8.0"
++      }
++    },
++    "node_modules/esprima": {
++      "version": "4.0.1",
++      "resolved": "https://registry.npmjs.org/esprima/-/esprima-4.0.1.tgz",
++      "integrity": "sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==",
++      "dev": true,
++      "bin": {
++        "esparse": "bin/esparse.js",
++        "esvalidate": "bin/esvalidate.js"
++      },
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/fast-glob": {
++      "version": "3.2.4",
++      "resolved": "https://registry.npmjs.org/fast-glob/-/fast-glob-3.2.4.tgz",
++      "integrity": "sha512-kr/Oo6PX51265qeuCYsyGypiO5uJFgBS0jksyG7FUeCyQzNwYnzrNIMR1NXfkZXsMYXYLRAHgISHBz8gQcxKHQ==",
++      "dev": true,
++      "dependencies": {
++        "@nodelib/fs.stat": "^2.0.2",
++        "@nodelib/fs.walk": "^1.2.3",
++        "glob-parent": "^5.1.0",
++        "merge2": "^1.3.0",
++        "micromatch": "^4.0.2",
++        "picomatch": "^2.2.1"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/fastq": {
++      "version": "1.8.0",
++      "resolved": "https://registry.npmjs.org/fastq/-/fastq-1.8.0.tgz",
++      "integrity": "sha512-SMIZoZdLh/fgofivvIkmknUXyPnvxRE3DhtZ5Me3Mrsk5gyPL42F0xr51TdRXskBxHfMp+07bcYzfsYEsSQA9Q==",
++      "dev": true,
++      "dependencies": {
++        "reusify": "^1.0.4"
++      }
++    },
++    "node_modules/fill-range": {
++      "version": "7.0.1",
++      "resolved": "https://registry.npmjs.org/fill-range/-/fill-range-7.0.1.tgz",
++      "integrity": "sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==",
++      "dev": true,
++      "dependencies": {
++        "to-regex-range": "^5.0.1"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/find-up": {
++      "version": "4.1.0",
++      "resolved": "https://registry.npmjs.org/find-up/-/find-up-4.1.0.tgz",
++      "integrity": "sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==",
++      "dev": true,
++      "dependencies": {
++        "locate-path": "^5.0.0",
++        "path-exists": "^4.0.0"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/fs-extra": {
++      "version": "9.0.1",
++      "resolved": "https://registry.npmjs.org/fs-extra/-/fs-extra-9.0.1.tgz",
++      "integrity": "sha512-h2iAoN838FqAFJY2/qVpzFXy+EBxfVE220PalAqQLDVsFOHLJrZvut5puAbCdNv6WJk+B8ihI+k0c7JK5erwqQ==",
++      "dev": true,
++      "dependencies": {
++        "at-least-node": "^1.0.0",
++        "graceful-fs": "^4.2.0",
++        "jsonfile": "^6.0.1",
++        "universalify": "^1.0.0"
++      },
++      "engines": {
++        "node": ">=10"
++      }
++    },
++    "node_modules/fsevents": {
++      "version": "2.1.3",
++      "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-2.1.3.tgz",
++      "integrity": "sha512-Auw9a4AxqWpa9GUfj370BMPzzyncfBABW8Mab7BGWBYDj4Isgq+cDKtx0i6u9jcX9pQDnswsaaOTgTmA5pEjuQ==",
++      "deprecated": "\"Please update to latest v2.3 or v2.2\"",
++      "dev": true,
++      "hasInstallScript": true,
++      "optional": true,
++      "os": [
++        "darwin"
++      ],
++      "engines": {
++        "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
++      }
++    },
++    "node_modules/get-caller-file": {
++      "version": "2.0.5",
++      "resolved": "https://registry.npmjs.org/get-caller-file/-/get-caller-file-2.0.5.tgz",
++      "integrity": "sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==",
++      "dev": true,
++      "engines": {
++        "node": "6.* || 8.* || >= 10.*"
++      }
++    },
++    "node_modules/get-stdin": {
++      "version": "7.0.0",
++      "resolved": "https://registry.npmjs.org/get-stdin/-/get-stdin-7.0.0.tgz",
++      "integrity": "sha512-zRKcywvrXlXsA0v0i9Io4KDRaAw7+a1ZpjRwl9Wox8PFlVCCHra7E9c4kqXCoCM9nR5tBkaTTZRBoCm60bFqTQ==",
++      "dev": true,
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/glob-parent": {
++      "version": "5.1.1",
++      "resolved": "https://registry.npmjs.org/glob-parent/-/glob-parent-5.1.1.tgz",
++      "integrity": "sha512-FnI+VGOpnlGHWZxthPGR+QhR78fuiK0sNLkHQv+bL9fQi57lNNdquIbna/WrfROrolq8GK5Ek6BiMwqL/voRYQ==",
++      "dev": true,
++      "dependencies": {
++        "is-glob": "^4.0.1"
++      },
++      "engines": {
++        "node": ">= 6"
++      }
++    },
++    "node_modules/globby": {
++      "version": "11.0.1",
++      "resolved": "https://registry.npmjs.org/globby/-/globby-11.0.1.tgz",
++      "integrity": "sha512-iH9RmgwCmUJHi2z5o2l3eTtGBtXek1OYlHrbcxOYugyHLmAsZrPj43OtHThd62Buh/Vv6VyCBD2bdyWcGNQqoQ==",
++      "dev": true,
++      "dependencies": {
++        "array-union": "^2.1.0",
++        "dir-glob": "^3.0.1",
++        "fast-glob": "^3.1.1",
++        "ignore": "^5.1.4",
++        "merge2": "^1.3.0",
++        "slash": "^3.0.0"
++      },
++      "engines": {
++        "node": ">=10"
++      },
++      "funding": {
++        "url": "https://github.com/sponsors/sindresorhus"
++      }
++    },
++    "node_modules/graceful-fs": {
++      "version": "4.2.4",
++      "resolved": "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.4.tgz",
++      "integrity": "sha512-WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw==",
++      "dev": true
++    },
++    "node_modules/has-flag": {
++      "version": "3.0.0",
++      "resolved": "https://registry.npmjs.org/has-flag/-/has-flag-3.0.0.tgz",
++      "integrity": "sha1-tdRU3CGZriJWmfNGfloH87lVuv0=",
++      "dev": true,
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/ignore": {
++      "version": "5.1.8",
++      "resolved": "https://registry.npmjs.org/ignore/-/ignore-5.1.8.tgz",
++      "integrity": "sha512-BMpfD7PpiETpBl/A6S498BaIJ6Y/ABT93ETbby2fP00v4EbvPBXWEoaR1UBPKs3iR53pJY7EtZk5KACI57i1Uw==",
++      "dev": true,
++      "engines": {
++        "node": ">= 4"
++      }
++    },
++    "node_modules/import-cwd": {
++      "version": "2.1.0",
++      "resolved": "https://registry.npmjs.org/import-cwd/-/import-cwd-2.1.0.tgz",
++      "integrity": "sha1-qmzzbnInYShcs3HsZRn1PiQ1sKk=",
++      "dev": true,
++      "dependencies": {
++        "import-from": "^2.1.0"
++      },
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/import-fresh": {
++      "version": "2.0.0",
++      "resolved": "https://registry.npmjs.org/import-fresh/-/import-fresh-2.0.0.tgz",
++      "integrity": "sha1-2BNVwVYS04bGH53dOSLUMEgipUY=",
++      "dev": true,
++      "dependencies": {
++        "caller-path": "^2.0.0",
++        "resolve-from": "^3.0.0"
++      },
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/import-from": {
++      "version": "2.1.0",
++      "resolved": "https://registry.npmjs.org/import-from/-/import-from-2.1.0.tgz",
++      "integrity": "sha1-M1238qev/VOqpHHUuAId7ja387E=",
++      "dev": true,
++      "dependencies": {
++        "resolve-from": "^3.0.0"
++      },
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/is-arrayish": {
++      "version": "0.2.1",
++      "resolved": "https://registry.npmjs.org/is-arrayish/-/is-arrayish-0.2.1.tgz",
++      "integrity": "sha1-d8mYQFJ6qOyxqLppe4BkWnqSap0=",
++      "dev": true
++    },
++    "node_modules/is-binary-path": {
++      "version": "2.1.0",
++      "resolved": "https://registry.npmjs.org/is-binary-path/-/is-binary-path-2.1.0.tgz",
++      "integrity": "sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==",
++      "dev": true,
++      "dependencies": {
++        "binary-extensions": "^2.0.0"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/is-directory": {
++      "version": "0.3.1",
++      "resolved": "https://registry.npmjs.org/is-directory/-/is-directory-0.3.1.tgz",
++      "integrity": "sha1-YTObbyR1/Hcv2cnYP1yFddwVSuE=",
++      "dev": true,
++      "engines": {
++        "node": ">=0.10.0"
++      }
++    },
++    "node_modules/is-extglob": {
++      "version": "2.1.1",
++      "resolved": "https://registry.npmjs.org/is-extglob/-/is-extglob-2.1.1.tgz",
++      "integrity": "sha1-qIwCU1eR8C7TfHahueqXc8gz+MI=",
++      "dev": true,
++      "engines": {
++        "node": ">=0.10.0"
++      }
++    },
++    "node_modules/is-fullwidth-code-point": {
++      "version": "3.0.0",
++      "resolved": "https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz",
++      "integrity": "sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==",
++      "dev": true,
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/is-glob": {
++      "version": "4.0.1",
++      "resolved": "https://registry.npmjs.org/is-glob/-/is-glob-4.0.1.tgz",
++      "integrity": "sha512-5G0tKtBTFImOqDnLB2hG6Bp2qcKEFduo4tZu9MT/H6NQv/ghhy30o55ufafxJ/LdH79LLs2Kfrn85TLKyA7BUg==",
++      "dev": true,
++      "dependencies": {
++        "is-extglob": "^2.1.1"
++      },
++      "engines": {
++        "node": ">=0.10.0"
++      }
++    },
++    "node_modules/is-number": {
++      "version": "7.0.0",
++      "resolved": "https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz",
++      "integrity": "sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==",
++      "dev": true,
++      "engines": {
++        "node": ">=0.12.0"
++      }
++    },
++    "node_modules/js-yaml": {
++      "version": "3.14.0",
++      "resolved": "https://registry.npmjs.org/js-yaml/-/js-yaml-3.14.0.tgz",
++      "integrity": "sha512-/4IbIeHcD9VMHFqDR/gQ7EdZdLimOvW2DdcxFjdyyZ9NsbS+ccrXqVWDtab/lRl5AlUqmpBx8EhPaWR+OtY17A==",
++      "dev": true,
++      "dependencies": {
++        "argparse": "^1.0.7",
++        "esprima": "^4.0.0"
++      },
++      "bin": {
++        "js-yaml": "bin/js-yaml.js"
++      }
++    },
++    "node_modules/json-parse-better-errors": {
++      "version": "1.0.2",
++      "resolved": "https://registry.npmjs.org/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz",
++      "integrity": "sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==",
++      "dev": true
++    },
++    "node_modules/jsonfile": {
++      "version": "6.0.1",
++      "resolved": "https://registry.npmjs.org/jsonfile/-/jsonfile-6.0.1.tgz",
++      "integrity": "sha512-jR2b5v7d2vIOust+w3wtFKZIfpC2pnRmFAhAC/BuweZFQR8qZzxH1OyrQ10HmdVYiXWkYUqPVsz91cG7EL2FBg==",
++      "dev": true,
++      "dependencies": {
++        "universalify": "^1.0.0"
++      },
++      "optionalDependencies": {
++        "graceful-fs": "^4.1.6"
++      }
++    },
++    "node_modules/locate-path": {
++      "version": "5.0.0",
++      "resolved": "https://registry.npmjs.org/locate-path/-/locate-path-5.0.0.tgz",
++      "integrity": "sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==",
++      "dev": true,
++      "dependencies": {
++        "p-locate": "^4.1.0"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/lodash": {
++      "version": "4.17.15",
++      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.15.tgz",
++      "integrity": "sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==",
++      "dev": true
++    },
++    "node_modules/log-symbols": {
++      "version": "2.2.0",
++      "resolved": "https://registry.npmjs.org/log-symbols/-/log-symbols-2.2.0.tgz",
++      "integrity": "sha512-VeIAFslyIerEJLXHziedo2basKbMKtTw3vfn5IzG0XTjhAVEJyNHnL2p7vc+wBDSdQuUpNw3M2u6xb9QsAY5Eg==",
++      "dev": true,
++      "dependencies": {
++        "chalk": "^2.0.1"
++      },
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/merge2": {
++      "version": "1.4.1",
++      "resolved": "https://registry.npmjs.org/merge2/-/merge2-1.4.1.tgz",
++      "integrity": "sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==",
++      "dev": true,
++      "engines": {
++        "node": ">= 8"
++      }
++    },
++    "node_modules/micromatch": {
++      "version": "4.0.2",
++      "resolved": "https://registry.npmjs.org/micromatch/-/micromatch-4.0.2.tgz",
++      "integrity": "sha512-y7FpHSbMUMoyPbYUSzO6PaZ6FyRnQOpHuKwbo1G+Knck95XVU4QAiKdGEnj5wwoS7PlOgthX/09u5iFJ+aYf5Q==",
++      "dev": true,
++      "dependencies": {
++        "braces": "^3.0.1",
++        "picomatch": "^2.0.5"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/node-releases": {
++      "version": "1.1.58",
++      "resolved": "https://registry.npmjs.org/node-releases/-/node-releases-1.1.58.tgz",
++      "integrity": "sha512-NxBudgVKiRh/2aPWMgPR7bPTX0VPmGx5QBwCtdHitnqFE5/O8DeBXuIMH1nwNnw/aMo6AjOrpsHzfY3UbUJ7yg==",
++      "dev": true
++    },
++    "node_modules/normalize-path": {
++      "version": "3.0.0",
++      "resolved": "https://registry.npmjs.org/normalize-path/-/normalize-path-3.0.0.tgz",
++      "integrity": "sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==",
++      "dev": true,
++      "engines": {
++        "node": ">=0.10.0"
++      }
++    },
++    "node_modules/normalize-range": {
++      "version": "0.1.2",
++      "resolved": "https://registry.npmjs.org/normalize-range/-/normalize-range-0.1.2.tgz",
++      "integrity": "sha1-LRDAa9/TEuqXd2laTShDlFa3WUI=",
++      "dev": true,
++      "engines": {
++        "node": ">=0.10.0"
++      }
++    },
++    "node_modules/num2fraction": {
++      "version": "1.2.2",
++      "resolved": "https://registry.npmjs.org/num2fraction/-/num2fraction-1.2.2.tgz",
++      "integrity": "sha1-b2gragJ6Tp3fpFZM0lidHU5mnt4=",
++      "dev": true
++    },
++    "node_modules/p-limit": {
++      "version": "2.3.0",
++      "resolved": "https://registry.npmjs.org/p-limit/-/p-limit-2.3.0.tgz",
++      "integrity": "sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==",
++      "dev": true,
++      "dependencies": {
++        "p-try": "^2.0.0"
++      },
++      "engines": {
++        "node": ">=6"
++      },
++      "funding": {
++        "url": "https://github.com/sponsors/sindresorhus"
++      }
++    },
++    "node_modules/p-locate": {
++      "version": "4.1.0",
++      "resolved": "https://registry.npmjs.org/p-locate/-/p-locate-4.1.0.tgz",
++      "integrity": "sha512-R79ZZ/0wAxKGu3oYMlz8jy/kbhsNrS7SKZ7PxEHBgJ5+F2mtFW2fK2cOtBh1cHYkQsbzFV7I+EoRKe6Yt0oK7A==",
++      "dev": true,
++      "dependencies": {
++        "p-limit": "^2.2.0"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/p-try": {
++      "version": "2.2.0",
++      "resolved": "https://registry.npmjs.org/p-try/-/p-try-2.2.0.tgz",
++      "integrity": "sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==",
++      "dev": true,
++      "engines": {
++        "node": ">=6"
++      }
++    },
++    "node_modules/parse-json": {
++      "version": "4.0.0",
++      "resolved": "https://registry.npmjs.org/parse-json/-/parse-json-4.0.0.tgz",
++      "integrity": "sha1-vjX1Qlvh9/bHRxhPmKeIy5lHfuA=",
++      "dev": true,
++      "dependencies": {
++        "error-ex": "^1.3.1",
++        "json-parse-better-errors": "^1.0.1"
++      },
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/path-exists": {
++      "version": "4.0.0",
++      "resolved": "https://registry.npmjs.org/path-exists/-/path-exists-4.0.0.tgz",
++      "integrity": "sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==",
++      "dev": true,
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/path-type": {
++      "version": "4.0.0",
++      "resolved": "https://registry.npmjs.org/path-type/-/path-type-4.0.0.tgz",
++      "integrity": "sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==",
++      "dev": true,
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/picomatch": {
++      "version": "2.2.2",
++      "resolved": "https://registry.npmjs.org/picomatch/-/picomatch-2.2.2.tgz",
++      "integrity": "sha512-q0M/9eZHzmr0AulXyPwNfZjtwZ/RBZlbN3K3CErVrk50T2ASYI7Bye0EvekFY3IP1Nt2DHu0re+V2ZHIpMkuWg==",
++      "dev": true,
++      "engines": {
++        "node": ">=8.6"
++      },
++      "funding": {
++        "url": "https://github.com/sponsors/jonschlinkert"
++      }
++    },
++    "node_modules/pify": {
++      "version": "2.3.0",
++      "resolved": "https://registry.npmjs.org/pify/-/pify-2.3.0.tgz",
++      "integrity": "sha1-7RQaasBDqEnqWISY59yosVMw6Qw=",
++      "dev": true,
++      "engines": {
++        "node": ">=0.10.0"
++      }
++    },
++    "node_modules/postcss": {
++      "version": "7.0.32",
++      "resolved": "https://registry.npmjs.org/postcss/-/postcss-7.0.32.tgz",
++      "integrity": "sha512-03eXong5NLnNCD05xscnGKGDZ98CyzoqPSMjOe6SuoQY7Z2hIj0Ld1g/O/UQRuOle2aRtiIRDg9tDcTGAkLfKw==",
++      "dev": true,
++      "dependencies": {
++        "chalk": "^2.4.2",
++        "source-map": "^0.6.1",
++        "supports-color": "^6.1.0"
++      },
++      "engines": {
++        "node": ">=6.0.0"
++      },
++      "funding": {
++        "type": "tidelift",
++        "url": "https://tidelift.com/funding/github/npm/postcss"
++      }
++    },
++    "node_modules/postcss-cli": {
++      "version": "7.1.1",
++      "resolved": "https://registry.npmjs.org/postcss-cli/-/postcss-cli-7.1.1.tgz",
++      "integrity": "sha512-bYQy5ydAQJKCMSpvaMg0ThPBeGYqhQXumjbFOmWnL4u65CYXQ16RfS6afGQpit0dGv/fNzxbdDtx8dkqOhhIbg==",
++      "dev": true,
++      "dependencies": {
++        "chalk": "^4.0.0",
++        "chokidar": "^3.3.0",
++        "dependency-graph": "^0.9.0",
++        "fs-extra": "^9.0.0",
++        "get-stdin": "^7.0.0",
++        "globby": "^11.0.0",
++        "postcss": "^7.0.0",
++        "postcss-load-config": "^2.0.0",
++        "postcss-reporter": "^6.0.0",
++        "pretty-hrtime": "^1.0.3",
++        "read-cache": "^1.0.0",
++        "yargs": "^15.0.2"
++      },
++      "bin": {
++        "postcss": "bin/postcss"
++      },
++      "engines": {
++        "node": ">=10"
++      }
++    },
++    "node_modules/postcss-cli/node_modules/ansi-styles": {
++      "version": "4.2.1",
++      "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.2.1.tgz",
++      "integrity": "sha512-9VGjrMsG1vePxcSweQsN20KY/c4zN0h9fLjqAbwbPfahM3t+NL+M9HC8xeXG2I8pX5NoamTGNuomEUFI7fcUjA==",
++      "dev": true,
++      "dependencies": {
++        "@types/color-name": "^1.1.1",
++        "color-convert": "^2.0.1"
++      },
++      "engines": {
++        "node": ">=8"
++      },
++      "funding": {
++        "url": "https://github.com/chalk/ansi-styles?sponsor=1"
++      }
++    },
++    "node_modules/postcss-cli/node_modules/chalk": {
++      "version": "4.1.0",
++      "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.0.tgz",
++      "integrity": "sha512-qwx12AxXe2Q5xQ43Ac//I6v5aXTipYrSESdOgzrN+9XjgEpyjpKuvSGaN4qE93f7TQTlerQQ8S+EQ0EyDoVL1A==",
++      "dev": true,
++      "dependencies": {
++        "ansi-styles": "^4.1.0",
++        "supports-color": "^7.1.0"
++      },
++      "engines": {
++        "node": ">=10"
++      },
++      "funding": {
++        "url": "https://github.com/chalk/chalk?sponsor=1"
++      }
++    },
++    "node_modules/postcss-cli/node_modules/color-convert": {
++      "version": "2.0.1",
++      "resolved": "https://registry.npmjs.org/color-convert/-/color-convert-2.0.1.tgz",
++      "integrity": "sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==",
++      "dev": true,
++      "dependencies": {
++        "color-name": "~1.1.4"
++      },
++      "engines": {
++        "node": ">=7.0.0"
++      }
++    },
++    "node_modules/postcss-cli/node_modules/color-name": {
++      "version": "1.1.4",
++      "resolved": "https://registry.npmjs.org/color-name/-/color-name-1.1.4.tgz",
++      "integrity": "sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==",
++      "dev": true
++    },
++    "node_modules/postcss-cli/node_modules/has-flag": {
++      "version": "4.0.0",
++      "resolved": "https://registry.npmjs.org/has-flag/-/has-flag-4.0.0.tgz",
++      "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
++      "dev": true,
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/postcss-cli/node_modules/supports-color": {
++      "version": "7.1.0",
++      "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-7.1.0.tgz",
++      "integrity": "sha512-oRSIpR8pxT1Wr2FquTNnGet79b3BWljqOuoW/h4oBhxJ/HUbX5nX6JSruTkvXDCFMwDPvsaTTbvMLKZWSy0R5g==",
++      "dev": true,
++      "dependencies": {
++        "has-flag": "^4.0.0"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/postcss-load-config": {
++      "version": "2.1.0",
++      "resolved": "https://registry.npmjs.org/postcss-load-config/-/postcss-load-config-2.1.0.tgz",
++      "integrity": "sha512-4pV3JJVPLd5+RueiVVB+gFOAa7GWc25XQcMp86Zexzke69mKf6Nx9LRcQywdz7yZI9n1udOxmLuAwTBypypF8Q==",
++      "dev": true,
++      "dependencies": {
++        "cosmiconfig": "^5.0.0",
++        "import-cwd": "^2.0.0"
++      },
++      "engines": {
++        "node": ">= 4"
++      }
++    },
++    "node_modules/postcss-reporter": {
++      "version": "6.0.1",
++      "resolved": "https://registry.npmjs.org/postcss-reporter/-/postcss-reporter-6.0.1.tgz",
++      "integrity": "sha512-LpmQjfRWyabc+fRygxZjpRxfhRf9u/fdlKf4VHG4TSPbV2XNsuISzYW1KL+1aQzx53CAppa1bKG4APIB/DOXXw==",
++      "dev": true,
++      "dependencies": {
++        "chalk": "^2.4.1",
++        "lodash": "^4.17.11",
++        "log-symbols": "^2.2.0",
++        "postcss": "^7.0.7"
++      },
++      "engines": {
++        "node": ">=6"
++      }
++    },
++    "node_modules/postcss-value-parser": {
++      "version": "4.1.0",
++      "resolved": "https://registry.npmjs.org/postcss-value-parser/-/postcss-value-parser-4.1.0.tgz",
++      "integrity": "sha512-97DXOFbQJhk71ne5/Mt6cOu6yxsSfM0QGQyl0L25Gca4yGWEGJaig7l7gbCX623VqTBNGLRLaVUCnNkcedlRSQ==",
++      "dev": true
++    },
++    "node_modules/pretty-hrtime": {
++      "version": "1.0.3",
++      "resolved": "https://registry.npmjs.org/pretty-hrtime/-/pretty-hrtime-1.0.3.tgz",
++      "integrity": "sha1-t+PqQkNaTJsnWdmeDyAesZWALuE=",
++      "dev": true,
++      "engines": {
++        "node": ">= 0.8"
++      }
++    },
++    "node_modules/read-cache": {
++      "version": "1.0.0",
++      "resolved": "https://registry.npmjs.org/read-cache/-/read-cache-1.0.0.tgz",
++      "integrity": "sha1-5mTvMRYRZsl1HNvo28+GtftY93Q=",
++      "dev": true,
++      "dependencies": {
++        "pify": "^2.3.0"
++      }
++    },
++    "node_modules/readdirp": {
++      "version": "3.4.0",
++      "resolved": "https://registry.npmjs.org/readdirp/-/readdirp-3.4.0.tgz",
++      "integrity": "sha512-0xe001vZBnJEK+uKcj8qOhyAKPzIT+gStxWr3LCB0DwcXR5NZJ3IaC+yGnHCYzB/S7ov3m3EEbZI2zeNvX+hGQ==",
++      "dev": true,
++      "dependencies": {
++        "picomatch": "^2.2.1"
++      },
++      "engines": {
++        "node": ">=8.10.0"
++      }
++    },
++    "node_modules/regenerator-runtime": {
++      "version": "0.13.5",
++      "resolved": "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.5.tgz",
++      "integrity": "sha512-ZS5w8CpKFinUzOwW3c83oPeVXoNsrLsaCoLtJvAClH135j/R77RuymhiSErhm2lKcwSCIpmvIWSbDkIfAqKQlA==",
++      "dev": true
++    },
++    "node_modules/require-directory": {
++      "version": "2.1.1",
++      "resolved": "https://registry.npmjs.org/require-directory/-/require-directory-2.1.1.tgz",
++      "integrity": "sha1-jGStX9MNqxyXbiNE/+f3kqam30I=",
++      "dev": true,
++      "engines": {
++        "node": ">=0.10.0"
++      }
++    },
++    "node_modules/require-main-filename": {
++      "version": "2.0.0",
++      "resolved": "https://registry.npmjs.org/require-main-filename/-/require-main-filename-2.0.0.tgz",
++      "integrity": "sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==",
++      "dev": true
++    },
++    "node_modules/resolve-from": {
++      "version": "3.0.0",
++      "resolved": "https://registry.npmjs.org/resolve-from/-/resolve-from-3.0.0.tgz",
++      "integrity": "sha1-six699nWiBvItuZTM17rywoYh0g=",
++      "dev": true,
++      "engines": {
++        "node": ">=4"
++      }
++    },
++    "node_modules/reusify": {
++      "version": "1.0.4",
++      "resolved": "https://registry.npmjs.org/reusify/-/reusify-1.0.4.tgz",
++      "integrity": "sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==",
++      "dev": true,
++      "engines": {
++        "iojs": ">=1.0.0",
++        "node": ">=0.10.0"
++      }
++    },
++    "node_modules/run-parallel": {
++      "version": "1.1.9",
++      "resolved": "https://registry.npmjs.org/run-parallel/-/run-parallel-1.1.9.tgz",
++      "integrity": "sha512-DEqnSRTDw/Tc3FXf49zedI638Z9onwUotBMiUFKmrO2sdFKIbXamXGQ3Axd4qgphxKB4kw/qP1w5kTxnfU1B9Q==",
++      "dev": true
++    },
++    "node_modules/set-blocking": {
++      "version": "2.0.0",
++      "resolved": "https://registry.npmjs.org/set-blocking/-/set-blocking-2.0.0.tgz",
++      "integrity": "sha1-BF+XgtARrppoA93TgrJDkrPYkPc=",
++      "dev": true
++    },
++    "node_modules/slash": {
++      "version": "3.0.0",
++      "resolved": "https://registry.npmjs.org/slash/-/slash-3.0.0.tgz",
++      "integrity": "sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==",
++      "dev": true,
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/source-map": {
++      "version": "0.6.1",
++      "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz",
++      "integrity": "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==",
++      "dev": true,
++      "engines": {
++        "node": ">=0.10.0"
++      }
++    },
++    "node_modules/sprintf-js": {
++      "version": "1.0.3",
++      "resolved": "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz",
++      "integrity": "sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=",
++      "dev": true
++    },
++    "node_modules/string-width": {
++      "version": "4.2.0",
++      "resolved": "https://registry.npmjs.org/string-width/-/string-width-4.2.0.tgz",
++      "integrity": "sha512-zUz5JD+tgqtuDjMhwIg5uFVV3dtqZ9yQJlZVfq4I01/K5Paj5UHj7VyrQOJvzawSVlKpObApbfD0Ed6yJc+1eg==",
++      "dev": true,
++      "dependencies": {
++        "emoji-regex": "^8.0.0",
++        "is-fullwidth-code-point": "^3.0.0",
++        "strip-ansi": "^6.0.0"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/strip-ansi": {
++      "version": "6.0.0",
++      "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.0.tgz",
++      "integrity": "sha512-AuvKTrTfQNYNIctbR1K/YGTR1756GycPsg7b9bdV9Duqur4gv6aKqHXah67Z8ImS7WEz5QVcOtlfW2rZEugt6w==",
++      "dev": true,
++      "dependencies": {
++        "ansi-regex": "^5.0.0"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/supports-color": {
++      "version": "6.1.0",
++      "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-6.1.0.tgz",
++      "integrity": "sha512-qe1jfm1Mg7Nq/NSh6XE24gPXROEVsWHxC1LIx//XNlD9iw7YZQGjZNjYN7xGaEG6iKdA8EtNFW6R0gjnVXp+wQ==",
++      "dev": true,
++      "dependencies": {
++        "has-flag": "^3.0.0"
++      },
++      "engines": {
++        "node": ">=6"
++      }
++    },
++    "node_modules/to-regex-range": {
++      "version": "5.0.1",
++      "resolved": "https://registry.npmjs.org/to-regex-range/-/to-regex-range-5.0.1.tgz",
++      "integrity": "sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==",
++      "dev": true,
++      "dependencies": {
++        "is-number": "^7.0.0"
++      },
++      "engines": {
++        "node": ">=8.0"
++      }
++    },
++    "node_modules/universalify": {
++      "version": "1.0.0",
++      "resolved": "https://registry.npmjs.org/universalify/-/universalify-1.0.0.tgz",
++      "integrity": "sha512-rb6X1W158d7pRQBg5gkR8uPaSfiids68LTJQYOtEUhoJUWBdaQHsuT/EUduxXYxcrt4r5PJ4fuHW1MHT6p0qug==",
++      "dev": true,
++      "engines": {
++        "node": ">= 10.0.0"
++      }
++    },
++    "node_modules/which-module": {
++      "version": "2.0.0",
++      "resolved": "https://registry.npmjs.org/which-module/-/which-module-2.0.0.tgz",
++      "integrity": "sha1-2e8H3Od7mQK4o6j6SzHD4/fm6Ho=",
++      "dev": true
++    },
++    "node_modules/wrap-ansi": {
++      "version": "6.2.0",
++      "resolved": "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-6.2.0.tgz",
++      "integrity": "sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==",
++      "dev": true,
++      "dependencies": {
++        "ansi-styles": "^4.0.0",
++        "string-width": "^4.1.0",
++        "strip-ansi": "^6.0.0"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/wrap-ansi/node_modules/ansi-styles": {
++      "version": "4.2.1",
++      "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.2.1.tgz",
++      "integrity": "sha512-9VGjrMsG1vePxcSweQsN20KY/c4zN0h9fLjqAbwbPfahM3t+NL+M9HC8xeXG2I8pX5NoamTGNuomEUFI7fcUjA==",
++      "dev": true,
++      "dependencies": {
++        "@types/color-name": "^1.1.1",
++        "color-convert": "^2.0.1"
++      },
++      "engines": {
++        "node": ">=8"
++      },
++      "funding": {
++        "url": "https://github.com/chalk/ansi-styles?sponsor=1"
++      }
++    },
++    "node_modules/wrap-ansi/node_modules/color-convert": {
++      "version": "2.0.1",
++      "resolved": "https://registry.npmjs.org/color-convert/-/color-convert-2.0.1.tgz",
++      "integrity": "sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==",
++      "dev": true,
++      "dependencies": {
++        "color-name": "~1.1.4"
++      },
++      "engines": {
++        "node": ">=7.0.0"
++      }
++    },
++    "node_modules/wrap-ansi/node_modules/color-name": {
++      "version": "1.1.4",
++      "resolved": "https://registry.npmjs.org/color-name/-/color-name-1.1.4.tgz",
++      "integrity": "sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==",
++      "dev": true
++    },
++    "node_modules/xregexp": {
++      "version": "4.3.0",
++      "resolved": "https://registry.npmjs.org/xregexp/-/xregexp-4.3.0.tgz",
++      "integrity": "sha512-7jXDIFXh5yJ/orPn4SXjuVrWWoi4Cr8jfV1eHv9CixKSbU+jY4mxfrBwAuDvupPNKpMUY+FeIqsVw/JLT9+B8g==",
++      "dev": true,
++      "dependencies": {
++        "@babel/runtime-corejs3": "^7.8.3"
++      }
++    },
++    "node_modules/y18n": {
++      "version": "4.0.0",
++      "resolved": "https://registry.npmjs.org/y18n/-/y18n-4.0.0.tgz",
++      "integrity": "sha512-r9S/ZyXu/Xu9q1tYlpsLIsa3EeLXXk0VwlxqTcFRfg9EhMW+17kbt9G0NrgCmhGb5vT2hyhJZLfDGx+7+5Uj/w==",
++      "dev": true
++    },
++    "node_modules/yargs": {
++      "version": "15.4.0",
++      "resolved": "https://registry.npmjs.org/yargs/-/yargs-15.4.0.tgz",
++      "integrity": "sha512-D3fRFnZwLWp8jVAAhPZBsmeIHY8tTsb8ItV9KaAaopmC6wde2u6Yw29JBIZHXw14kgkRnYmDgmQU4FVMDlIsWw==",
++      "dev": true,
++      "dependencies": {
++        "cliui": "^6.0.0",
++        "decamelize": "^3.2.0",
++        "find-up": "^4.1.0",
++        "get-caller-file": "^2.0.1",
++        "require-directory": "^2.1.1",
++        "require-main-filename": "^2.0.0",
++        "set-blocking": "^2.0.0",
++        "string-width": "^4.2.0",
++        "which-module": "^2.0.0",
++        "y18n": "^4.0.0",
++        "yargs-parser": "^18.1.2"
++      },
++      "engines": {
++        "node": ">=8"
++      }
++    },
++    "node_modules/yargs-parser": {
++      "version": "18.1.3",
++      "resolved": "https://registry.npmjs.org/yargs-parser/-/yargs-parser-18.1.3.tgz",
++      "integrity": "sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==",
++      "dev": true,
++      "dependencies": {
++        "camelcase": "^5.0.0",
++        "decamelize": "^1.2.0"
++      },
++      "engines": {
++        "node": ">=6"
++      }
++    },
++    "node_modules/yargs-parser/node_modules/decamelize": {
++      "version": "1.2.0",
++      "resolved": "https://registry.npmjs.org/decamelize/-/decamelize-1.2.0.tgz",
++      "integrity": "sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=",
++      "dev": true,
++      "engines": {
++        "node": ">=0.10.0"
++      }
++    }
++  },
+   "dependencies": {
+     "@babel/runtime-corejs3": {
+       "version": "7.10.4",
+diff --git a/yarn.lock b/yarn.lock
+new file mode 100644
+index 0000000000..b75bea82a6
+--- /dev/null
++++ b/yarn.lock
+@@ -0,0 +1,789 @@
++# THIS IS AN AUTOGENERATED FILE. DO NOT EDIT THIS FILE DIRECTLY.
++# yarn lockfile v1
++
++
++"@babel/runtime-corejs3@^7.8.3":
++  "integrity" "sha512-BFlgP2SoLO9HJX9WBwN67gHWMBhDX/eDz64Jajd6mR/UAUzqrNMm99d4qHnVaKscAElZoFiPv+JpR/Siud5lXw=="
++  "resolved" "https://registry.npmjs.org/@babel/runtime-corejs3/-/runtime-corejs3-7.10.4.tgz"
++  "version" "7.10.4"
++  dependencies:
++    "core-js-pure" "^3.0.0"
++    "regenerator-runtime" "^0.13.4"
++
++"@nodelib/fs.scandir@2.1.3":
++  "integrity" "sha512-eGmwYQn3gxo4r7jdQnkrrN6bY478C3P+a/y72IJukF8LjB6ZHeB3c+Ehacj3sYeSmUXGlnA67/PmbM9CVwL7Dw=="
++  "resolved" "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.3.tgz"
++  "version" "2.1.3"
++  dependencies:
++    "@nodelib/fs.stat" "2.0.3"
++    "run-parallel" "^1.1.9"
++
++"@nodelib/fs.stat@^2.0.2", "@nodelib/fs.stat@2.0.3":
++  "integrity" "sha512-bQBFruR2TAwoevBEd/NWMoAAtNGzTRgdrqnYCc7dhzfoNvqPzLyqlEQnzZ3kVnNrSp25iyxE00/3h2fqGAGArA=="
++  "resolved" "https://registry.npmjs.org/@nodelib/fs.stat/-/fs.stat-2.0.3.tgz"
++  "version" "2.0.3"
++
++"@nodelib/fs.walk@^1.2.3":
++  "integrity" "sha512-1V9XOY4rDW0rehzbrcqAmHnz8e7SKvX27gh8Gt2WgB0+pdzdiLV83p72kZPU+jvMbS1qU5mauP2iOvO8rhmurQ=="
++  "resolved" "https://registry.npmjs.org/@nodelib/fs.walk/-/fs.walk-1.2.4.tgz"
++  "version" "1.2.4"
++  dependencies:
++    "@nodelib/fs.scandir" "2.1.3"
++    "fastq" "^1.6.0"
++
++"@types/color-name@^1.1.1":
++  "integrity" "sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ=="
++  "resolved" "https://registry.npmjs.org/@types/color-name/-/color-name-1.1.1.tgz"
++  "version" "1.1.1"
++
++"ansi-regex@^5.0.0":
++  "integrity" "sha512-bY6fj56OUQ0hU1KjFNDQuJFezqKdrAyFdIevADiqrWHwSlbmBNMHp5ak2f40Pm8JTFyM2mqxkG6ngkHO11f/lg=="
++  "resolved" "https://registry.npmjs.org/ansi-regex/-/ansi-regex-5.0.0.tgz"
++  "version" "5.0.0"
++
++"ansi-styles@^3.2.1":
++  "integrity" "sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA=="
++  "resolved" "https://registry.npmjs.org/ansi-styles/-/ansi-styles-3.2.1.tgz"
++  "version" "3.2.1"
++  dependencies:
++    "color-convert" "^1.9.0"
++
++"ansi-styles@^4.0.0":
++  "integrity" "sha512-9VGjrMsG1vePxcSweQsN20KY/c4zN0h9fLjqAbwbPfahM3t+NL+M9HC8xeXG2I8pX5NoamTGNuomEUFI7fcUjA=="
++  "resolved" "https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.2.1.tgz"
++  "version" "4.2.1"
++  dependencies:
++    "@types/color-name" "^1.1.1"
++    "color-convert" "^2.0.1"
++
++"ansi-styles@^4.1.0":
++  "integrity" "sha512-9VGjrMsG1vePxcSweQsN20KY/c4zN0h9fLjqAbwbPfahM3t+NL+M9HC8xeXG2I8pX5NoamTGNuomEUFI7fcUjA=="
++  "resolved" "https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.2.1.tgz"
++  "version" "4.2.1"
++  dependencies:
++    "@types/color-name" "^1.1.1"
++    "color-convert" "^2.0.1"
++
++"anymatch@~3.1.1":
++  "integrity" "sha512-mM8522psRCqzV+6LhomX5wgp25YVibjh8Wj23I5RPkPppSVSjyKD2A2mBJmWGa+KN7f2D6LNh9jkBCeyLktzjg=="
++  "resolved" "https://registry.npmjs.org/anymatch/-/anymatch-3.1.1.tgz"
++  "version" "3.1.1"
++  dependencies:
++    "normalize-path" "^3.0.0"
++    "picomatch" "^2.0.4"
++
++"argparse@^1.0.7":
++  "integrity" "sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg=="
++  "resolved" "https://registry.npmjs.org/argparse/-/argparse-1.0.10.tgz"
++  "version" "1.0.10"
++  dependencies:
++    "sprintf-js" "~1.0.2"
++
++"array-union@^2.1.0":
++  "integrity" "sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw=="
++  "resolved" "https://registry.npmjs.org/array-union/-/array-union-2.1.0.tgz"
++  "version" "2.1.0"
++
++"at-least-node@^1.0.0":
++  "integrity" "sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg=="
++  "resolved" "https://registry.npmjs.org/at-least-node/-/at-least-node-1.0.0.tgz"
++  "version" "1.0.0"
++
++"autoprefixer@^9.8.4":
++  "integrity" "sha512-84aYfXlpUe45lvmS+HoAWKCkirI/sw4JK0/bTeeqgHYco3dcsOn0NqdejISjptsYwNji/21dnkDri9PsYKk89A=="
++  "resolved" "https://registry.npmjs.org/autoprefixer/-/autoprefixer-9.8.4.tgz"
++  "version" "9.8.4"
++  dependencies:
++    "browserslist" "^4.12.0"
++    "caniuse-lite" "^1.0.30001087"
++    "colorette" "^1.2.0"
++    "normalize-range" "^0.1.2"
++    "num2fraction" "^1.2.2"
++    "postcss" "^7.0.32"
++    "postcss-value-parser" "^4.1.0"
++
++"binary-extensions@^2.0.0":
++  "integrity" "sha512-1Yj8h9Q+QDF5FzhMs/c9+6UntbD5MkRfRwac8DoEm9ZfUBZ7tZ55YcGVAzEe4bXsdQHEk+s9S5wsOKVdZrw0tQ=="
++  "resolved" "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.1.0.tgz"
++  "version" "2.1.0"
++
++"braces@^3.0.1", "braces@~3.0.2":
++  "integrity" "sha512-b8um+L1RzM3WDSzvhm6gIz1yfTbBt6YTlcEKAvsmqCZZFw46z626lVj9j1yEPW33H5H+lBQpZMP1k8l+78Ha0A=="
++  "resolved" "https://registry.npmjs.org/braces/-/braces-3.0.2.tgz"
++  "version" "3.0.2"
++  dependencies:
++    "fill-range" "^7.0.1"
++
++"browserslist@^4.12.0":
++  "integrity" "sha512-MfZaeYqR8StRZdstAK9hCKDd2StvePCYp5rHzQCPicUjfFliDgmuaBNPHYUTpAywBN8+Wc/d7NYVFkO0aqaBUw=="
++  "resolved" "https://registry.npmjs.org/browserslist/-/browserslist-4.12.2.tgz"
++  "version" "4.12.2"
++  dependencies:
++    "caniuse-lite" "^1.0.30001088"
++    "electron-to-chromium" "^1.3.483"
++    "escalade" "^3.0.1"
++    "node-releases" "^1.1.58"
++
++"caller-callsite@^2.0.0":
++  "integrity" "sha1-hH4PzgoiN1CpoCfFSzNzGtMVQTQ="
++  "resolved" "https://registry.npmjs.org/caller-callsite/-/caller-callsite-2.0.0.tgz"
++  "version" "2.0.0"
++  dependencies:
++    "callsites" "^2.0.0"
++
++"caller-path@^2.0.0":
++  "integrity" "sha1-Ro+DBE42mrIBD6xfBs7uFbsssfQ="
++  "resolved" "https://registry.npmjs.org/caller-path/-/caller-path-2.0.0.tgz"
++  "version" "2.0.0"
++  dependencies:
++    "caller-callsite" "^2.0.0"
++
++"callsites@^2.0.0":
++  "integrity" "sha1-BuuE8A7qQT2oav/vrL/7Ngk7PFA="
++  "resolved" "https://registry.npmjs.org/callsites/-/callsites-2.0.0.tgz"
++  "version" "2.0.0"
++
++"camelcase@^5.0.0":
++  "integrity" "sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg=="
++  "resolved" "https://registry.npmjs.org/camelcase/-/camelcase-5.3.1.tgz"
++  "version" "5.3.1"
++
++"caniuse-lite@^1.0.30001087", "caniuse-lite@^1.0.30001088":
++  "integrity" "sha512-0+ODNoOjtWD5eS9aaIpf4K0gQqZfILNY4WSNuYzeT1sXni+lMrrVjc0odEobJt6wrODofDZUX8XYi/5y7+xl8g=="
++  "resolved" "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001093.tgz"
++  "version" "1.0.30001093"
++
++"chalk@^2.0.1", "chalk@^2.4.1", "chalk@^2.4.2":
++  "integrity" "sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ=="
++  "resolved" "https://registry.npmjs.org/chalk/-/chalk-2.4.2.tgz"
++  "version" "2.4.2"
++  dependencies:
++    "ansi-styles" "^3.2.1"
++    "escape-string-regexp" "^1.0.5"
++    "supports-color" "^5.3.0"
++
++"chalk@^4.0.0":
++  "integrity" "sha512-qwx12AxXe2Q5xQ43Ac//I6v5aXTipYrSESdOgzrN+9XjgEpyjpKuvSGaN4qE93f7TQTlerQQ8S+EQ0EyDoVL1A=="
++  "resolved" "https://registry.npmjs.org/chalk/-/chalk-4.1.0.tgz"
++  "version" "4.1.0"
++  dependencies:
++    "ansi-styles" "^4.1.0"
++    "supports-color" "^7.1.0"
++
++"chokidar@^3.3.0":
++  "integrity" "sha512-aXAaho2VJtisB/1fg1+3nlLJqGOuewTzQpd/Tz0yTg2R0e4IGtshYvtjowyEumcBv2z+y4+kc75Mz7j5xJskcQ=="
++  "resolved" "https://registry.npmjs.org/chokidar/-/chokidar-3.4.0.tgz"
++  "version" "3.4.0"
++  dependencies:
++    "anymatch" "~3.1.1"
++    "braces" "~3.0.2"
++    "glob-parent" "~5.1.0"
++    "is-binary-path" "~2.1.0"
++    "is-glob" "~4.0.1"
++    "normalize-path" "~3.0.0"
++    "readdirp" "~3.4.0"
++  optionalDependencies:
++    "fsevents" "~2.1.2"
++
++"cliui@^6.0.0":
++  "integrity" "sha512-t6wbgtoCXvAzst7QgXxJYqPt0usEfbgQdftEPbLL/cvv6HPE5VgvqCuAIDR0NgU52ds6rFwqrgakNLrHEjCbrQ=="
++  "resolved" "https://registry.npmjs.org/cliui/-/cliui-6.0.0.tgz"
++  "version" "6.0.0"
++  dependencies:
++    "string-width" "^4.2.0"
++    "strip-ansi" "^6.0.0"
++    "wrap-ansi" "^6.2.0"
++
++"color-convert@^1.9.0":
++  "integrity" "sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg=="
++  "resolved" "https://registry.npmjs.org/color-convert/-/color-convert-1.9.3.tgz"
++  "version" "1.9.3"
++  dependencies:
++    "color-name" "1.1.3"
++
++"color-convert@^2.0.1":
++  "integrity" "sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ=="
++  "resolved" "https://registry.npmjs.org/color-convert/-/color-convert-2.0.1.tgz"
++  "version" "2.0.1"
++  dependencies:
++    "color-name" "~1.1.4"
++
++"color-name@~1.1.4":
++  "integrity" "sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA=="
++  "resolved" "https://registry.npmjs.org/color-name/-/color-name-1.1.4.tgz"
++  "version" "1.1.4"
++
++"color-name@1.1.3":
++  "integrity" "sha1-p9BVi9icQveV3UIyj3QIMcpTvCU="
++  "resolved" "https://registry.npmjs.org/color-name/-/color-name-1.1.3.tgz"
++  "version" "1.1.3"
++
++"colorette@^1.2.0":
++  "integrity" "sha512-soRSroY+OF/8OdA3PTQXwaDJeMc7TfknKKrxeSCencL2a4+Tx5zhxmmv7hdpCjhKBjehzp8+bwe/T68K0hpIjw=="
++  "resolved" "https://registry.npmjs.org/colorette/-/colorette-1.2.0.tgz"
++  "version" "1.2.0"
++
++"core-js-pure@^3.0.0":
++  "integrity" "sha512-lacdXOimsiD0QyNf9BC/mxivNJ/ybBGJXQFKzRekp1WTHoVUWsUHEn+2T8GJAzzIhyOuXA+gOxCVN3l+5PLPUA=="
++  "resolved" "https://registry.npmjs.org/core-js-pure/-/core-js-pure-3.6.5.tgz"
++  "version" "3.6.5"
++
++"cosmiconfig@^5.0.0":
++  "integrity" "sha512-H65gsXo1SKjf8zmrJ67eJk8aIRKV5ff2D4uKZIBZShbhGSpEmsQOPW/SKMKYhSTrqR7ufy6RP69rPogdaPh/kA=="
++  "resolved" "https://registry.npmjs.org/cosmiconfig/-/cosmiconfig-5.2.1.tgz"
++  "version" "5.2.1"
++  dependencies:
++    "import-fresh" "^2.0.0"
++    "is-directory" "^0.3.1"
++    "js-yaml" "^3.13.1"
++    "parse-json" "^4.0.0"
++
++"decamelize@^1.2.0":
++  "integrity" "sha1-9lNNFRSCabIDUue+4m9QH5oZEpA="
++  "resolved" "https://registry.npmjs.org/decamelize/-/decamelize-1.2.0.tgz"
++  "version" "1.2.0"
++
++"decamelize@^3.2.0":
++  "integrity" "sha512-4TgkVUsmmu7oCSyGBm5FvfMoACuoh9EOidm7V5/J2X2djAwwt57qb3F2KMP2ITqODTCSwb+YRV+0Zqrv18k/hw=="
++  "resolved" "https://registry.npmjs.org/decamelize/-/decamelize-3.2.0.tgz"
++  "version" "3.2.0"
++  dependencies:
++    "xregexp" "^4.2.4"
++
++"dependency-graph@^0.9.0":
++  "integrity" "sha512-9YLIBURXj4DJMFALxXw9K3Y3rwb5Fk0X5/8ipCzaN84+gKxoHK43tVKRNakCQbiEx07E8Uwhuq21BpUagFhZ8w=="
++  "resolved" "https://registry.npmjs.org/dependency-graph/-/dependency-graph-0.9.0.tgz"
++  "version" "0.9.0"
++
++"dir-glob@^3.0.1":
++  "integrity" "sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA=="
++  "resolved" "https://registry.npmjs.org/dir-glob/-/dir-glob-3.0.1.tgz"
++  "version" "3.0.1"
++  dependencies:
++    "path-type" "^4.0.0"
++
++"electron-to-chromium@^1.3.483":
++  "integrity" "sha512-m4QS3IDShxauFfYFpnEzRCcUI55oKB9acEnHCuY/hSCZMz9Pz2KJj+UBnGHxRxS/mS1aphqOQ5wI6gc3yDZ7ew=="
++  "resolved" "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.487.tgz"
++  "version" "1.3.487"
++
++"emoji-regex@^8.0.0":
++  "integrity" "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="
++  "resolved" "https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz"
++  "version" "8.0.0"
++
++"error-ex@^1.3.1":
++  "integrity" "sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g=="
++  "resolved" "https://registry.npmjs.org/error-ex/-/error-ex-1.3.2.tgz"
++  "version" "1.3.2"
++  dependencies:
++    "is-arrayish" "^0.2.1"
++
++"escalade@^3.0.1":
++  "integrity" "sha512-DR6NO3h9niOT+MZs7bjxlj2a1k+POu5RN8CLTPX2+i78bRi9eLe7+0zXgUHMnGXWybYcL61E9hGhPKqedy8tQA=="
++  "resolved" "https://registry.npmjs.org/escalade/-/escalade-3.0.1.tgz"
++  "version" "3.0.1"
++
++"escape-string-regexp@^1.0.5":
++  "integrity" "sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ="
++  "resolved" "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz"
++  "version" "1.0.5"
++
++"esprima@^4.0.0":
++  "integrity" "sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A=="
++  "resolved" "https://registry.npmjs.org/esprima/-/esprima-4.0.1.tgz"
++  "version" "4.0.1"
++
++"fast-glob@^3.1.1":
++  "integrity" "sha512-kr/Oo6PX51265qeuCYsyGypiO5uJFgBS0jksyG7FUeCyQzNwYnzrNIMR1NXfkZXsMYXYLRAHgISHBz8gQcxKHQ=="
++  "resolved" "https://registry.npmjs.org/fast-glob/-/fast-glob-3.2.4.tgz"
++  "version" "3.2.4"
++  dependencies:
++    "@nodelib/fs.stat" "^2.0.2"
++    "@nodelib/fs.walk" "^1.2.3"
++    "glob-parent" "^5.1.0"
++    "merge2" "^1.3.0"
++    "micromatch" "^4.0.2"
++    "picomatch" "^2.2.1"
++
++"fastq@^1.6.0":
++  "integrity" "sha512-SMIZoZdLh/fgofivvIkmknUXyPnvxRE3DhtZ5Me3Mrsk5gyPL42F0xr51TdRXskBxHfMp+07bcYzfsYEsSQA9Q=="
++  "resolved" "https://registry.npmjs.org/fastq/-/fastq-1.8.0.tgz"
++  "version" "1.8.0"
++  dependencies:
++    "reusify" "^1.0.4"
++
++"fill-range@^7.0.1":
++  "integrity" "sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ=="
++  "resolved" "https://registry.npmjs.org/fill-range/-/fill-range-7.0.1.tgz"
++  "version" "7.0.1"
++  dependencies:
++    "to-regex-range" "^5.0.1"
++
++"find-up@^4.1.0":
++  "integrity" "sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw=="
++  "resolved" "https://registry.npmjs.org/find-up/-/find-up-4.1.0.tgz"
++  "version" "4.1.0"
++  dependencies:
++    "locate-path" "^5.0.0"
++    "path-exists" "^4.0.0"
++
++"fs-extra@^9.0.0":
++  "integrity" "sha512-h2iAoN838FqAFJY2/qVpzFXy+EBxfVE220PalAqQLDVsFOHLJrZvut5puAbCdNv6WJk+B8ihI+k0c7JK5erwqQ=="
++  "resolved" "https://registry.npmjs.org/fs-extra/-/fs-extra-9.0.1.tgz"
++  "version" "9.0.1"
++  dependencies:
++    "at-least-node" "^1.0.0"
++    "graceful-fs" "^4.2.0"
++    "jsonfile" "^6.0.1"
++    "universalify" "^1.0.0"
++
++"get-caller-file@^2.0.1":
++  "integrity" "sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg=="
++  "resolved" "https://registry.npmjs.org/get-caller-file/-/get-caller-file-2.0.5.tgz"
++  "version" "2.0.5"
++
++"get-stdin@^7.0.0":
++  "integrity" "sha512-zRKcywvrXlXsA0v0i9Io4KDRaAw7+a1ZpjRwl9Wox8PFlVCCHra7E9c4kqXCoCM9nR5tBkaTTZRBoCm60bFqTQ=="
++  "resolved" "https://registry.npmjs.org/get-stdin/-/get-stdin-7.0.0.tgz"
++  "version" "7.0.0"
++
++"glob-parent@^5.1.0", "glob-parent@~5.1.0":
++  "integrity" "sha512-FnI+VGOpnlGHWZxthPGR+QhR78fuiK0sNLkHQv+bL9fQi57lNNdquIbna/WrfROrolq8GK5Ek6BiMwqL/voRYQ=="
++  "resolved" "https://registry.npmjs.org/glob-parent/-/glob-parent-5.1.1.tgz"
++  "version" "5.1.1"
++  dependencies:
++    "is-glob" "^4.0.1"
++
++"globby@^11.0.0":
++  "integrity" "sha512-iH9RmgwCmUJHi2z5o2l3eTtGBtXek1OYlHrbcxOYugyHLmAsZrPj43OtHThd62Buh/Vv6VyCBD2bdyWcGNQqoQ=="
++  "resolved" "https://registry.npmjs.org/globby/-/globby-11.0.1.tgz"
++  "version" "11.0.1"
++  dependencies:
++    "array-union" "^2.1.0"
++    "dir-glob" "^3.0.1"
++    "fast-glob" "^3.1.1"
++    "ignore" "^5.1.4"
++    "merge2" "^1.3.0"
++    "slash" "^3.0.0"
++
++"graceful-fs@^4.1.6", "graceful-fs@^4.2.0":
++  "integrity" "sha512-WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw=="
++  "resolved" "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.4.tgz"
++  "version" "4.2.4"
++
++"has-flag@^3.0.0":
++  "integrity" "sha1-tdRU3CGZriJWmfNGfloH87lVuv0="
++  "resolved" "https://registry.npmjs.org/has-flag/-/has-flag-3.0.0.tgz"
++  "version" "3.0.0"
++
++"has-flag@^4.0.0":
++  "integrity" "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ=="
++  "resolved" "https://registry.npmjs.org/has-flag/-/has-flag-4.0.0.tgz"
++  "version" "4.0.0"
++
++"ignore@^5.1.4":
++  "integrity" "sha512-BMpfD7PpiETpBl/A6S498BaIJ6Y/ABT93ETbby2fP00v4EbvPBXWEoaR1UBPKs3iR53pJY7EtZk5KACI57i1Uw=="
++  "resolved" "https://registry.npmjs.org/ignore/-/ignore-5.1.8.tgz"
++  "version" "5.1.8"
++
++"import-cwd@^2.0.0":
++  "integrity" "sha1-qmzzbnInYShcs3HsZRn1PiQ1sKk="
++  "resolved" "https://registry.npmjs.org/import-cwd/-/import-cwd-2.1.0.tgz"
++  "version" "2.1.0"
++  dependencies:
++    "import-from" "^2.1.0"
++
++"import-fresh@^2.0.0":
++  "integrity" "sha1-2BNVwVYS04bGH53dOSLUMEgipUY="
++  "resolved" "https://registry.npmjs.org/import-fresh/-/import-fresh-2.0.0.tgz"
++  "version" "2.0.0"
++  dependencies:
++    "caller-path" "^2.0.0"
++    "resolve-from" "^3.0.0"
++
++"import-from@^2.1.0":
++  "integrity" "sha1-M1238qev/VOqpHHUuAId7ja387E="
++  "resolved" "https://registry.npmjs.org/import-from/-/import-from-2.1.0.tgz"
++  "version" "2.1.0"
++  dependencies:
++    "resolve-from" "^3.0.0"
++
++"is-arrayish@^0.2.1":
++  "integrity" "sha1-d8mYQFJ6qOyxqLppe4BkWnqSap0="
++  "resolved" "https://registry.npmjs.org/is-arrayish/-/is-arrayish-0.2.1.tgz"
++  "version" "0.2.1"
++
++"is-binary-path@~2.1.0":
++  "integrity" "sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw=="
++  "resolved" "https://registry.npmjs.org/is-binary-path/-/is-binary-path-2.1.0.tgz"
++  "version" "2.1.0"
++  dependencies:
++    "binary-extensions" "^2.0.0"
++
++"is-directory@^0.3.1":
++  "integrity" "sha1-YTObbyR1/Hcv2cnYP1yFddwVSuE="
++  "resolved" "https://registry.npmjs.org/is-directory/-/is-directory-0.3.1.tgz"
++  "version" "0.3.1"
++
++"is-extglob@^2.1.1":
++  "integrity" "sha1-qIwCU1eR8C7TfHahueqXc8gz+MI="
++  "resolved" "https://registry.npmjs.org/is-extglob/-/is-extglob-2.1.1.tgz"
++  "version" "2.1.1"
++
++"is-fullwidth-code-point@^3.0.0":
++  "integrity" "sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg=="
++  "resolved" "https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz"
++  "version" "3.0.0"
++
++"is-glob@^4.0.1", "is-glob@~4.0.1":
++  "integrity" "sha512-5G0tKtBTFImOqDnLB2hG6Bp2qcKEFduo4tZu9MT/H6NQv/ghhy30o55ufafxJ/LdH79LLs2Kfrn85TLKyA7BUg=="
++  "resolved" "https://registry.npmjs.org/is-glob/-/is-glob-4.0.1.tgz"
++  "version" "4.0.1"
++  dependencies:
++    "is-extglob" "^2.1.1"
++
++"is-number@^7.0.0":
++  "integrity" "sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng=="
++  "resolved" "https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz"
++  "version" "7.0.0"
++
++"js-yaml@^3.13.1":
++  "integrity" "sha512-/4IbIeHcD9VMHFqDR/gQ7EdZdLimOvW2DdcxFjdyyZ9NsbS+ccrXqVWDtab/lRl5AlUqmpBx8EhPaWR+OtY17A=="
++  "resolved" "https://registry.npmjs.org/js-yaml/-/js-yaml-3.14.0.tgz"
++  "version" "3.14.0"
++  dependencies:
++    "argparse" "^1.0.7"
++    "esprima" "^4.0.0"
++
++"json-parse-better-errors@^1.0.1":
++  "integrity" "sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw=="
++  "resolved" "https://registry.npmjs.org/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz"
++  "version" "1.0.2"
++
++"jsonfile@^6.0.1":
++  "integrity" "sha512-jR2b5v7d2vIOust+w3wtFKZIfpC2pnRmFAhAC/BuweZFQR8qZzxH1OyrQ10HmdVYiXWkYUqPVsz91cG7EL2FBg=="
++  "resolved" "https://registry.npmjs.org/jsonfile/-/jsonfile-6.0.1.tgz"
++  "version" "6.0.1"
++  dependencies:
++    "universalify" "^1.0.0"
++  optionalDependencies:
++    "graceful-fs" "^4.1.6"
++
++"locate-path@^5.0.0":
++  "integrity" "sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g=="
++  "resolved" "https://registry.npmjs.org/locate-path/-/locate-path-5.0.0.tgz"
++  "version" "5.0.0"
++  dependencies:
++    "p-locate" "^4.1.0"
++
++"lodash@^4.17.11":
++  "integrity" "sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A=="
++  "resolved" "https://registry.npmjs.org/lodash/-/lodash-4.17.15.tgz"
++  "version" "4.17.15"
++
++"log-symbols@^2.2.0":
++  "integrity" "sha512-VeIAFslyIerEJLXHziedo2basKbMKtTw3vfn5IzG0XTjhAVEJyNHnL2p7vc+wBDSdQuUpNw3M2u6xb9QsAY5Eg=="
++  "resolved" "https://registry.npmjs.org/log-symbols/-/log-symbols-2.2.0.tgz"
++  "version" "2.2.0"
++  dependencies:
++    "chalk" "^2.0.1"
++
++"merge2@^1.3.0":
++  "integrity" "sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg=="
++  "resolved" "https://registry.npmjs.org/merge2/-/merge2-1.4.1.tgz"
++  "version" "1.4.1"
++
++"micromatch@^4.0.2":
++  "integrity" "sha512-y7FpHSbMUMoyPbYUSzO6PaZ6FyRnQOpHuKwbo1G+Knck95XVU4QAiKdGEnj5wwoS7PlOgthX/09u5iFJ+aYf5Q=="
++  "resolved" "https://registry.npmjs.org/micromatch/-/micromatch-4.0.2.tgz"
++  "version" "4.0.2"
++  dependencies:
++    "braces" "^3.0.1"
++    "picomatch" "^2.0.5"
++
++"node-releases@^1.1.58":
++  "integrity" "sha512-NxBudgVKiRh/2aPWMgPR7bPTX0VPmGx5QBwCtdHitnqFE5/O8DeBXuIMH1nwNnw/aMo6AjOrpsHzfY3UbUJ7yg=="
++  "resolved" "https://registry.npmjs.org/node-releases/-/node-releases-1.1.58.tgz"
++  "version" "1.1.58"
++
++"normalize-path@^3.0.0", "normalize-path@~3.0.0":
++  "integrity" "sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA=="
++  "resolved" "https://registry.npmjs.org/normalize-path/-/normalize-path-3.0.0.tgz"
++  "version" "3.0.0"
++
++"normalize-range@^0.1.2":
++  "integrity" "sha1-LRDAa9/TEuqXd2laTShDlFa3WUI="
++  "resolved" "https://registry.npmjs.org/normalize-range/-/normalize-range-0.1.2.tgz"
++  "version" "0.1.2"
++
++"num2fraction@^1.2.2":
++  "integrity" "sha1-b2gragJ6Tp3fpFZM0lidHU5mnt4="
++  "resolved" "https://registry.npmjs.org/num2fraction/-/num2fraction-1.2.2.tgz"
++  "version" "1.2.2"
++
++"p-limit@^2.2.0":
++  "integrity" "sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w=="
++  "resolved" "https://registry.npmjs.org/p-limit/-/p-limit-2.3.0.tgz"
++  "version" "2.3.0"
++  dependencies:
++    "p-try" "^2.0.0"
++
++"p-locate@^4.1.0":
++  "integrity" "sha512-R79ZZ/0wAxKGu3oYMlz8jy/kbhsNrS7SKZ7PxEHBgJ5+F2mtFW2fK2cOtBh1cHYkQsbzFV7I+EoRKe6Yt0oK7A=="
++  "resolved" "https://registry.npmjs.org/p-locate/-/p-locate-4.1.0.tgz"
++  "version" "4.1.0"
++  dependencies:
++    "p-limit" "^2.2.0"
++
++"p-try@^2.0.0":
++  "integrity" "sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ=="
++  "resolved" "https://registry.npmjs.org/p-try/-/p-try-2.2.0.tgz"
++  "version" "2.2.0"
++
++"parse-json@^4.0.0":
++  "integrity" "sha1-vjX1Qlvh9/bHRxhPmKeIy5lHfuA="
++  "resolved" "https://registry.npmjs.org/parse-json/-/parse-json-4.0.0.tgz"
++  "version" "4.0.0"
++  dependencies:
++    "error-ex" "^1.3.1"
++    "json-parse-better-errors" "^1.0.1"
++
++"path-exists@^4.0.0":
++  "integrity" "sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w=="
++  "resolved" "https://registry.npmjs.org/path-exists/-/path-exists-4.0.0.tgz"
++  "version" "4.0.0"
++
++"path-type@^4.0.0":
++  "integrity" "sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw=="
++  "resolved" "https://registry.npmjs.org/path-type/-/path-type-4.0.0.tgz"
++  "version" "4.0.0"
++
++"picomatch@^2.0.4", "picomatch@^2.0.5", "picomatch@^2.2.1":
++  "integrity" "sha512-q0M/9eZHzmr0AulXyPwNfZjtwZ/RBZlbN3K3CErVrk50T2ASYI7Bye0EvekFY3IP1Nt2DHu0re+V2ZHIpMkuWg=="
++  "resolved" "https://registry.npmjs.org/picomatch/-/picomatch-2.2.2.tgz"
++  "version" "2.2.2"
++
++"pify@^2.3.0":
++  "integrity" "sha1-7RQaasBDqEnqWISY59yosVMw6Qw="
++  "resolved" "https://registry.npmjs.org/pify/-/pify-2.3.0.tgz"
++  "version" "2.3.0"
++
++"postcss-cli@^7.1.1":
++  "integrity" "sha512-bYQy5ydAQJKCMSpvaMg0ThPBeGYqhQXumjbFOmWnL4u65CYXQ16RfS6afGQpit0dGv/fNzxbdDtx8dkqOhhIbg=="
++  "resolved" "https://registry.npmjs.org/postcss-cli/-/postcss-cli-7.1.1.tgz"
++  "version" "7.1.1"
++  dependencies:
++    "chalk" "^4.0.0"
++    "chokidar" "^3.3.0"
++    "dependency-graph" "^0.9.0"
++    "fs-extra" "^9.0.0"
++    "get-stdin" "^7.0.0"
++    "globby" "^11.0.0"
++    "postcss" "^7.0.0"
++    "postcss-load-config" "^2.0.0"
++    "postcss-reporter" "^6.0.0"
++    "pretty-hrtime" "^1.0.3"
++    "read-cache" "^1.0.0"
++    "yargs" "^15.0.2"
++
++"postcss-load-config@^2.0.0":
++  "integrity" "sha512-4pV3JJVPLd5+RueiVVB+gFOAa7GWc25XQcMp86Zexzke69mKf6Nx9LRcQywdz7yZI9n1udOxmLuAwTBypypF8Q=="
++  "resolved" "https://registry.npmjs.org/postcss-load-config/-/postcss-load-config-2.1.0.tgz"
++  "version" "2.1.0"
++  dependencies:
++    "cosmiconfig" "^5.0.0"
++    "import-cwd" "^2.0.0"
++
++"postcss-reporter@^6.0.0":
++  "integrity" "sha512-LpmQjfRWyabc+fRygxZjpRxfhRf9u/fdlKf4VHG4TSPbV2XNsuISzYW1KL+1aQzx53CAppa1bKG4APIB/DOXXw=="
++  "resolved" "https://registry.npmjs.org/postcss-reporter/-/postcss-reporter-6.0.1.tgz"
++  "version" "6.0.1"
++  dependencies:
++    "chalk" "^2.4.1"
++    "lodash" "^4.17.11"
++    "log-symbols" "^2.2.0"
++    "postcss" "^7.0.7"
++
++"postcss-value-parser@^4.1.0":
++  "integrity" "sha512-97DXOFbQJhk71ne5/Mt6cOu6yxsSfM0QGQyl0L25Gca4yGWEGJaig7l7gbCX623VqTBNGLRLaVUCnNkcedlRSQ=="
++  "resolved" "https://registry.npmjs.org/postcss-value-parser/-/postcss-value-parser-4.1.0.tgz"
++  "version" "4.1.0"
++
++"postcss@^7.0.0", "postcss@^7.0.32", "postcss@^7.0.7":
++  "integrity" "sha512-03eXong5NLnNCD05xscnGKGDZ98CyzoqPSMjOe6SuoQY7Z2hIj0Ld1g/O/UQRuOle2aRtiIRDg9tDcTGAkLfKw=="
++  "resolved" "https://registry.npmjs.org/postcss/-/postcss-7.0.32.tgz"
++  "version" "7.0.32"
++  dependencies:
++    "chalk" "^2.4.2"
++    "source-map" "^0.6.1"
++    "supports-color" "^6.1.0"
++
++"pretty-hrtime@^1.0.3":
++  "integrity" "sha1-t+PqQkNaTJsnWdmeDyAesZWALuE="
++  "resolved" "https://registry.npmjs.org/pretty-hrtime/-/pretty-hrtime-1.0.3.tgz"
++  "version" "1.0.3"
++
++"read-cache@^1.0.0":
++  "integrity" "sha1-5mTvMRYRZsl1HNvo28+GtftY93Q="
++  "resolved" "https://registry.npmjs.org/read-cache/-/read-cache-1.0.0.tgz"
++  "version" "1.0.0"
++  dependencies:
++    "pify" "^2.3.0"
++
++"readdirp@~3.4.0":
++  "integrity" "sha512-0xe001vZBnJEK+uKcj8qOhyAKPzIT+gStxWr3LCB0DwcXR5NZJ3IaC+yGnHCYzB/S7ov3m3EEbZI2zeNvX+hGQ=="
++  "resolved" "https://registry.npmjs.org/readdirp/-/readdirp-3.4.0.tgz"
++  "version" "3.4.0"
++  dependencies:
++    "picomatch" "^2.2.1"
++
++"regenerator-runtime@^0.13.4":
++  "integrity" "sha512-ZS5w8CpKFinUzOwW3c83oPeVXoNsrLsaCoLtJvAClH135j/R77RuymhiSErhm2lKcwSCIpmvIWSbDkIfAqKQlA=="
++  "resolved" "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.5.tgz"
++  "version" "0.13.5"
++
++"require-directory@^2.1.1":
++  "integrity" "sha1-jGStX9MNqxyXbiNE/+f3kqam30I="
++  "resolved" "https://registry.npmjs.org/require-directory/-/require-directory-2.1.1.tgz"
++  "version" "2.1.1"
++
++"require-main-filename@^2.0.0":
++  "integrity" "sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg=="
++  "resolved" "https://registry.npmjs.org/require-main-filename/-/require-main-filename-2.0.0.tgz"
++  "version" "2.0.0"
++
++"resolve-from@^3.0.0":
++  "integrity" "sha1-six699nWiBvItuZTM17rywoYh0g="
++  "resolved" "https://registry.npmjs.org/resolve-from/-/resolve-from-3.0.0.tgz"
++  "version" "3.0.0"
++
++"reusify@^1.0.4":
++  "integrity" "sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw=="
++  "resolved" "https://registry.npmjs.org/reusify/-/reusify-1.0.4.tgz"
++  "version" "1.0.4"
++
++"run-parallel@^1.1.9":
++  "integrity" "sha512-DEqnSRTDw/Tc3FXf49zedI638Z9onwUotBMiUFKmrO2sdFKIbXamXGQ3Axd4qgphxKB4kw/qP1w5kTxnfU1B9Q=="
++  "resolved" "https://registry.npmjs.org/run-parallel/-/run-parallel-1.1.9.tgz"
++  "version" "1.1.9"
++
++"set-blocking@^2.0.0":
++  "integrity" "sha1-BF+XgtARrppoA93TgrJDkrPYkPc="
++  "resolved" "https://registry.npmjs.org/set-blocking/-/set-blocking-2.0.0.tgz"
++  "version" "2.0.0"
++
++"slash@^3.0.0":
++  "integrity" "sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q=="
++  "resolved" "https://registry.npmjs.org/slash/-/slash-3.0.0.tgz"
++  "version" "3.0.0"
++
++"source-map@^0.6.1":
++  "integrity" "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="
++  "resolved" "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz"
++  "version" "0.6.1"
++
++"sprintf-js@~1.0.2":
++  "integrity" "sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw="
++  "resolved" "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz"
++  "version" "1.0.3"
++
++"string-width@^4.1.0", "string-width@^4.2.0":
++  "integrity" "sha512-zUz5JD+tgqtuDjMhwIg5uFVV3dtqZ9yQJlZVfq4I01/K5Paj5UHj7VyrQOJvzawSVlKpObApbfD0Ed6yJc+1eg=="
++  "resolved" "https://registry.npmjs.org/string-width/-/string-width-4.2.0.tgz"
++  "version" "4.2.0"
++  dependencies:
++    "emoji-regex" "^8.0.0"
++    "is-fullwidth-code-point" "^3.0.0"
++    "strip-ansi" "^6.0.0"
++
++"strip-ansi@^6.0.0":
++  "integrity" "sha512-AuvKTrTfQNYNIctbR1K/YGTR1756GycPsg7b9bdV9Duqur4gv6aKqHXah67Z8ImS7WEz5QVcOtlfW2rZEugt6w=="
++  "resolved" "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.0.tgz"
++  "version" "6.0.0"
++  dependencies:
++    "ansi-regex" "^5.0.0"
++
++"supports-color@^5.3.0":
++  "integrity" "sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow=="
++  "resolved" "https://registry.npmjs.org/supports-color/-/supports-color-5.5.0.tgz"
++  "version" "5.5.0"
++  dependencies:
++    "has-flag" "^3.0.0"
++
++"supports-color@^6.1.0":
++  "integrity" "sha512-qe1jfm1Mg7Nq/NSh6XE24gPXROEVsWHxC1LIx//XNlD9iw7YZQGjZNjYN7xGaEG6iKdA8EtNFW6R0gjnVXp+wQ=="
++  "resolved" "https://registry.npmjs.org/supports-color/-/supports-color-6.1.0.tgz"
++  "version" "6.1.0"
++  dependencies:
++    "has-flag" "^3.0.0"
++
++"supports-color@^7.1.0":
++  "integrity" "sha512-oRSIpR8pxT1Wr2FquTNnGet79b3BWljqOuoW/h4oBhxJ/HUbX5nX6JSruTkvXDCFMwDPvsaTTbvMLKZWSy0R5g=="
++  "resolved" "https://registry.npmjs.org/supports-color/-/supports-color-7.1.0.tgz"
++  "version" "7.1.0"
++  dependencies:
++    "has-flag" "^4.0.0"
++
++"to-regex-range@^5.0.1":
++  "integrity" "sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ=="
++  "resolved" "https://registry.npmjs.org/to-regex-range/-/to-regex-range-5.0.1.tgz"
++  "version" "5.0.1"
++  dependencies:
++    "is-number" "^7.0.0"
++
++"universalify@^1.0.0":
++  "integrity" "sha512-rb6X1W158d7pRQBg5gkR8uPaSfiids68LTJQYOtEUhoJUWBdaQHsuT/EUduxXYxcrt4r5PJ4fuHW1MHT6p0qug=="
++  "resolved" "https://registry.npmjs.org/universalify/-/universalify-1.0.0.tgz"
++  "version" "1.0.0"
++
++"which-module@^2.0.0":
++  "integrity" "sha1-2e8H3Od7mQK4o6j6SzHD4/fm6Ho="
++  "resolved" "https://registry.npmjs.org/which-module/-/which-module-2.0.0.tgz"
++  "version" "2.0.0"
++
++"wrap-ansi@^6.2.0":
++  "integrity" "sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA=="
++  "resolved" "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-6.2.0.tgz"
++  "version" "6.2.0"
++  dependencies:
++    "ansi-styles" "^4.0.0"
++    "string-width" "^4.1.0"
++    "strip-ansi" "^6.0.0"
++
++"xregexp@^4.2.4":
++  "integrity" "sha512-7jXDIFXh5yJ/orPn4SXjuVrWWoi4Cr8jfV1eHv9CixKSbU+jY4mxfrBwAuDvupPNKpMUY+FeIqsVw/JLT9+B8g=="
++  "resolved" "https://registry.npmjs.org/xregexp/-/xregexp-4.3.0.tgz"
++  "version" "4.3.0"
++  dependencies:
++    "@babel/runtime-corejs3" "^7.8.3"
++
++"y18n@^4.0.0":
++  "integrity" "sha512-r9S/ZyXu/Xu9q1tYlpsLIsa3EeLXXk0VwlxqTcFRfg9EhMW+17kbt9G0NrgCmhGb5vT2hyhJZLfDGx+7+5Uj/w=="
++  "resolved" "https://registry.npmjs.org/y18n/-/y18n-4.0.0.tgz"
++  "version" "4.0.0"
++
++"yargs-parser@^18.1.2":
++  "integrity" "sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ=="
++  "resolved" "https://registry.npmjs.org/yargs-parser/-/yargs-parser-18.1.3.tgz"
++  "version" "18.1.3"
++  dependencies:
++    "camelcase" "^5.0.0"
++    "decamelize" "^1.2.0"
++
++"yargs@^15.0.2":
++  "integrity" "sha512-D3fRFnZwLWp8jVAAhPZBsmeIHY8tTsb8ItV9KaAaopmC6wde2u6Yw29JBIZHXw14kgkRnYmDgmQU4FVMDlIsWw=="
++  "resolved" "https://registry.npmjs.org/yargs/-/yargs-15.4.0.tgz"
++  "version" "15.4.0"
++  dependencies:
++    "cliui" "^6.0.0"
++    "decamelize" "^3.2.0"
++    "find-up" "^4.1.0"
++    "get-caller-file" "^2.0.1"
++    "require-directory" "^2.1.1"
++    "require-main-filename" "^2.0.0"
++    "set-blocking" "^2.0.0"
++    "string-width" "^4.2.0"
++    "which-module" "^2.0.0"
++    "y18n" "^4.0.0"
++    "yargs-parser" "^18.1.2"
+-- 
+2.34.1
+
